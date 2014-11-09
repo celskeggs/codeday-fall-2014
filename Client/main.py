@@ -8,6 +8,8 @@ background = background.convert()
 green = (0, 255, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
+white = (255, 255, 255)
+color = [green, red, blue, white]
 
 display_welcome = True
 
@@ -29,9 +31,6 @@ status_not = font.render("BATTLE", 0, green)
 text_input = ""
 
 while 1:
-
-  status_health = font.render("Health: " + str(client.my("health")), 0, red)
-
   countdown = font.render("Time Left in Battle: " + str(interpreter.client.dictionary.get("mode.countdown", 0)/100), 0, red)
 
   is_in_lobby = client.dictionary.get("mode.isinlobby", True)
@@ -72,10 +71,13 @@ while 1:
   for i in range(0, 4):
     if interpreter.client.dictionary["connected." + str(i)]:
       player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "None") + ": " +
-                                interpreter.client.dictionary.get("class." + str(i), "No Class Picked"), 0, red)
+                                interpreter.client.dictionary.get("class." + str(i), "No Class Picked")
+                                , 0, color[i])
+      player_health = font.render("Health: " + str(interpreter.client.dictionary.get("health." + str(i), "")), 0, color[i])
       screen.blit(player_list, (size[0] - player_list.get_width(),
-                                               (background.get_rect().centery - (font.get_height() * (i - 2)))))
-
+                                               (background.get_rect().centery - (font.get_height() * ((i * 2) - 1)))))
+      screen.blit(player_health, (size[0] - player_health.get_width(),
+                                 (background.get_rect().centery - font.get_height() * ((i * 2) - 2))))
 
   if display_welcome == True:
     screen.blit(welcome, textpos)
