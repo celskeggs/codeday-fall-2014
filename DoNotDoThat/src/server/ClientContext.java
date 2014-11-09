@@ -21,6 +21,7 @@ public class ClientContext extends CombatantContext {
 		this.clientId = clientId;
 		this.packetOutputStream = packetOutputStream;
 		this.handler = handler;
+		resetCombatant();
 	}
 
 	public void setLevel(int level) {

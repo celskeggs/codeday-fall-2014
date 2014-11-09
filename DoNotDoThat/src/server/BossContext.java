@@ -16,13 +16,14 @@ public class BossContext extends CombatantContext {
 	}
 
 	private void generateBoss() {
+		String longname = null;
 		switch (random.nextInt(4)) {
-		case 0: name = "dragon"; attacks = new String[] { "burn", "slam", "swipe" }; break;
-		case 1: name = "remo williams"; attacks = new String[] { "smash", "crush", "stomp" }; break;
-		case 2: name = "paladin"; attacks = new String[] { "bash", "sweep", "impale" }; break;
-		case 3: name = "duck"; attacks = new String[] { "quack", "swim", "eat" }; break;
+		case 0: longname = name = "dragon"; attacks = new String[] { "burn", "slam", "swipe" }; break;
+		case 1: longname = "remo williams"; name = "remo"; attacks = new String[] { "smash", "crush", "stomp" }; break;
+		case 2: longname = name = "paladin"; attacks = new String[] { "bash", "sweep", "impale" }; break;
+		case 3: longname = name = "duck"; attacks = new String[] { "quack", "swim", "eat" }; break;
 		}
-		game.storage.put("name.boss", name);
+		game.storage.put("name.boss", longname);
 	}
 
 	public void scaleHealth(int plyCount) {

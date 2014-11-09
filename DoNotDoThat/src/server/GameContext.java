@@ -245,7 +245,7 @@ public class GameContext {
 			break;
 		case "wizard.grind":
 		case "boss.crush":
-			if (prob(1)) {
+			if (prob(10)) {
 				sendMessage(server, attacker.getName() + " INSTAKILLS " + target.getName() + "!");
 				return true;
 			}
