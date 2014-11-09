@@ -67,7 +67,7 @@ while 1:
 
     for i in range(0, 4):
       if interpreter.client.dictionary["connected." + str(i)]:
-        player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "nameless"))
+        player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "nameless"), 0, red)
         screen.blit(player_list, (640 - player_list.get_width(), (background.get_rect().centery - (font.get_height() * (i - 2)))))
 
 
