@@ -52,7 +52,7 @@ def ask_route_server():
 
 s = socket.socket()
 host, port = ask_route_server()
-#host = ("10.251.14.147")
+#host = ("192.168.0.61")
 #port = 50000
 s.connect((host, port))
 
