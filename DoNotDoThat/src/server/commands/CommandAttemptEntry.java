@@ -1,6 +1,5 @@
 package server.commands;
 
-import server.ClientContext;
 import server.GameContext;
 
 public class CommandAttemptEntry extends Command {

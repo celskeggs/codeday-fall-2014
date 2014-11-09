@@ -40,9 +40,7 @@ public class KeyValueStore {
 
 	public synchronized void sendUpdates(PacketOutputStream pout)
 			throws IOException {
-		Logger.fine("About to send to client: " + pout);
 		ByteBuffer enc = ByteBuffer.allocate(4096);
-		Logger.fine("SIZE1: " + dirty.size());
 		for (String dirtykey : dirty) {
 			Logger.finer("Sending key " + dirtykey);
 			Packet out = new Packet();
@@ -72,7 +70,6 @@ public class KeyValueStore {
 			pout.write(out);
 		}
 		dirty.clear();
-		Logger.fine("SIZE2: " + dirty.size());
 	}
 
 	public synchronized void sendUpdatesAll(ClientContext[] clients) {
