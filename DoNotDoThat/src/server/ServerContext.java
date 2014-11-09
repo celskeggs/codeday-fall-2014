@@ -7,23 +7,23 @@ import server.commands.Command;
 import server.logger.Logger;
 import server.netio.ClientHandlerThread;
 import server.netio.PacketOutputStream;
+import server.route.RouteClient;
 
 public class ServerContext {
 
 	private final BlockingQueue<Command> commands = new LinkedBlockingQueue<>();
 	public final GameContext context = new GameContext();
 	private final ClientContext[] clients = new ClientContext[4];
+	public RouteClient route;
 
-	public ClientContext getClientContext(
-			PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
+	public ClientContext getClientContext(PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
 		Boolean b = (Boolean) context.storage.get("mode.isinlobby");
 		if (b != null && b) {
 			synchronized (clients) {
 				for (int i = 0; i < clients.length; i++) {
 					if (clients[i] == null) {
 						context.storage.setAllDirty();
-						return clients[i] = new ClientContext(this, i,
-								packetOutputStream, handler);
+						return clients[i] = new ClientContext(this, i, packetOutputStream, handler);
 					}
 				}
 			}
@@ -55,8 +55,7 @@ public class ServerContext {
 		if (clientId != -1) {
 			synchronized (clients) {
 				if (clients[clientId] != clientContext) {
-					Logger.warning("Client is not attached properly: "
-							+ clientContext);
+					Logger.warning("Client is not attached properly: " + clientContext);
 				} else {
 					clients[clientId] = null;
 				}

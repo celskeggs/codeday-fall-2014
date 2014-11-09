@@ -8,8 +8,7 @@ import server.logger.Logger;
 public abstract class CombatantContext {
 	protected final GameContext game;
 	private String uid;
-	private static final List<String> statusEffects = Arrays.asList("burn",
-			"bleed", "paralyze");
+	private static final List<String> statusEffects = Arrays.asList("burn", "bleed", "paralyze");
 	private boolean wasParalyzed;
 
 	public CombatantContext(GameContext game, int health, String uid) {
@@ -39,7 +38,7 @@ public abstract class CombatantContext {
 			}
 		}
 	}
-	
+
 	private void applyStatusEffect(ServerContext context, String effect) {
 		switch (effect) {
 		case "burn":
@@ -62,7 +61,7 @@ public abstract class CombatantContext {
 	public int getStatus(String name) {
 		return (Integer) game.storage.get("status." + name + "." + uid);
 	}
-	
+
 	public void setStatus(String name, int turns) {
 		game.storage.put("status." + name + "." + uid, turns);
 	}
@@ -102,12 +101,12 @@ public abstract class CombatantContext {
 	public void applyStatusEffect(String name, int upto) {
 		setStatus(name, Math.max(getStatus(name), upto));
 	}
-	
+
 	public int getMoveUses(String move) {
 		Integer out = (Integer) game.storage.get("uses." + move + "." + uid);
 		return out == null ? 0 : out;
 	}
-	
+
 	private void setMoveUses(String move, int count) {
 		if (count == 0) {
 			game.storage.remove("uses." + move + "." + uid);
@@ -115,7 +114,7 @@ public abstract class CombatantContext {
 			game.storage.put("uses." + move + "." + uid, count);
 		}
 	}
-	
+
 	public void useMove(String move) {
 		setMoveUses(move, getMoveUses(move) + 1);
 	}
@@ -123,7 +122,7 @@ public abstract class CombatantContext {
 	public boolean canUseMove(String cmdname) {
 		return getMoveUses(cmdname) < GameContext.getMaxUses(cmdname);
 	}
-	
+
 	public boolean useUpTo(String cmdname) {
 		if (canUseMove(cmdname)) {
 			useMove(cmdname);

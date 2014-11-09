@@ -33,13 +33,11 @@ public abstract class Command {
 		ByteBuffer buf = ByteBuffer.wrap(packet.data);
 		try {
 			Object object = Encoder.decode(buf);
-			Command cmd = (Command) classes.get(packet.type)
-					.getConstructor(Object.class).newInstance(object);
+			Command cmd = (Command) classes.get(packet.type).getConstructor(Object.class).newInstance(object);
 			cmd.client = clientContext;
 			return cmd;
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
 			Logger.severe("Could not load packet", e);
 			return null;
 		}

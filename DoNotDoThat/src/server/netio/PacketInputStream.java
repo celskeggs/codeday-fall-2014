@@ -13,7 +13,7 @@ public class PacketInputStream {
 			throw new IOException("Bad magic number!");
 		}
 	}
-	
+
 	public Packet read() throws IOException {
 		Packet p = new Packet();
 		p.recv(din);

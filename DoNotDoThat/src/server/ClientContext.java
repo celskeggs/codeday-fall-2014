@@ -15,15 +15,23 @@ public class ClientContext extends CombatantContext {
 	private final ClientHandlerThread handler;
 	public static final int DEFAULT_PLAYER_HEALTH = 10;
 
-	public ClientContext(ServerContext serverContext, int clientId,
-			PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
+	public ClientContext(ServerContext serverContext, int clientId, PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
 		super(serverContext.context, DEFAULT_PLAYER_HEALTH, "" + clientId);
 		this.serverContext = serverContext;
 		this.clientId = clientId;
 		this.packetOutputStream = packetOutputStream;
 		this.handler = handler;
 	}
+
+	public void setLevel(int level) {
+		game.storage.put("level." + game.storage.get("ip." + clientId), level);
+	}
 	
+	public int getLevel() {
+		Integer out = (Integer) game.storage.get("level." + game.storage.get("ip." + clientId));
+		return out == null ? 1 : out;
+	}
+
 	public boolean isValid() {
 		return clientId >= 0 && serverContext.getClient(clientId) == this;
 	}
@@ -47,7 +55,8 @@ public class ClientContext extends CombatantContext {
 	}
 
 	public void receivedChatMessage(String string) {
-		//Logger.info("Sending message '" + string + "' -> client." + this.clientId);
+		// Logger.info("Sending message '" + string + "' -> client." +
+		// this.clientId);
 		Packet p = new Packet();
 		p.type = 0x0306;
 		p.data = string.getBytes();
@@ -83,7 +92,7 @@ public class ClientContext extends CombatantContext {
 	public void resetCombatant() {
 		serverContext.context.storage.remove("class." + clientId);
 		serverContext.context.storage.put("isready." + clientId, false);
-		resetStatusAndHealth(DEFAULT_PLAYER_HEALTH);
+		resetStatusAndHealth(DEFAULT_PLAYER_HEALTH + getLevel() - 1);
 	}
 
 	@Override

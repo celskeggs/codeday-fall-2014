@@ -5,9 +5,9 @@ import server.GameContext;
 public class CommandAttemptEntry extends Command {
 
 	public CommandAttemptEntry(Object o) {
-		
+
 	}
-	
+
 	@Override
 	public void process(GameContext context) {
 		if (client.getName() == null) {

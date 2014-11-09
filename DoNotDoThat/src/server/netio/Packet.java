@@ -11,8 +11,7 @@ public class Packet {
 	public void send(DataOutputStream out) throws IOException {
 		out.writeInt(data.length);
 		if (type != (type & 0xFFFF)) {
-			throw new IllegalStateException(
-					"Type cannot be expressed in 16 bits!");
+			throw new IllegalStateException("Type cannot be expressed in 16 bits!");
 		}
 		out.writeShort(type);
 		out.write(data);

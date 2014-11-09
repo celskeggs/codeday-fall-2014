@@ -8,19 +8,19 @@ package server.logger;
  */
 final class StandardStreamLogger implements LoggingTarget {
 
-    public synchronized void log(LogLevel level, String message, Throwable thr) {
-        if (thr != null) {
-            System.err.println("LOG{" + level.message + "} " + message);
-            thr.printStackTrace(System.err);
-        } else {
-            System.err.println("LOG[" + level.message + "] " + message);
-        }
-    }
+	public synchronized void log(LogLevel level, String message, Throwable thr) {
+		if (thr != null) {
+			System.err.println("LOG{" + level.message + "} " + message);
+			thr.printStackTrace(System.err);
+		} else {
+			System.err.println("LOG[" + level.message + "] " + message);
+		}
+	}
 
-    public synchronized void log(LogLevel level, String message, String extended) {
-        System.err.println("LOG[" + level.message + "] " + message);
-        if (extended != null && !extended.isEmpty()) {
-            System.err.println(extended);
-        }
-    }
+	public synchronized void log(LogLevel level, String message, String extended) {
+		System.err.println("LOG[" + level.message + "] " + message);
+		if (extended != null && !extended.isEmpty()) {
+			System.err.println(extended);
+		}
+	}
 }

@@ -15,7 +15,7 @@ public class CommandSetClass extends Command {
 		if (client.getClassName() == null) {
 			if (GameContext.isValidClass(name)) {
 				ClientContext players[] = client.serverContext.listPlayers();
-				for (int i=0; i<players.length; i++) {
+				for (int i = 0; i < players.length; i++) {
 					if (players[i] != null && name.equals(players[i].getClassName())) {
 						String plyname = players[i].getName();
 						if (plyname == null) {

@@ -2,42 +2,58 @@
 
 import socket, threading, decode, Queue, hashlib
 
-s = socket.socket()
-host = ("10.251.14.147")
-port = 50000
-s.connect((host, port))
-
-dictionary = {}
-chatlines = Queue.Queue()
-local_id = -2
-
-def encode2(x):
-    return chr((x >> 8) & 0xFF) + chr(x & 0xFF)
-def encode4(x):
-    return chr((x >> 24) & 0xFF) + chr((x >> 16) & 0xFF) + chr((x >> 8) & 0xFF) + chr(x & 0xFF)
-s.send(encode4(0xd007d074))
-
-def parse2(x):
-    return (ord(x[0]) << 8) | ord(x[1])
-def parse4(x):
-    return (ord(x[0]) << 24) | (ord(x[1]) << 16) | (ord(x[2]) << 8) | ord(x[3])
-def getall(length):
+def getall(length, sock):
     out = ""
     while len(out) < length:
-        data = s.recv(length - len(out))
+        data = sock.recv(length - len(out))
         if data:
             out += data
         else:
             print "Server closed connection."
             sys.exit()
     return out
+def encode2(x):
+    return chr((x >> 8) & 0xFF) + chr(x & 0xFF)
+def encode4(x):
+    return chr((x >> 24) & 0xFF) + chr((x >> 16) & 0xFF) + chr((x >> 8) & 0xFF) + chr(x & 0xFF)
+def parse2(x):
+    return (ord(x[0]) << 8) | ord(x[1])
+def parse4(x):
+    return (ord(x[0]) << 24) | (ord(x[1]) << 16) | (ord(x[2]) << 8) | ord(x[3])
+def ask_route_server():
+	ls = socket.socket()
+	ls.connect(("10.251.14.147", 50001))
+	ls.send(encode4(0xDEADBEEF))
+	b = (getall(1, ls) == 0)
+	len = parse2(getall(2, ls))
+	data = getall(len, ls)
+	if b:
+		print "Cannot get server: " + data
+		sys.exit()
+	else:
+		print "Server provided address: " + data
+		host, port = data.split(":")
+		return host, int(port)
+
+s = socket.socket()
+host, port = ask_route_server()
+#host = ("10.251.14.147")
+#port = 50000
+s.connect((host, port))
+
+dictionary = {}
+chatlines = Queue.Queue()
+local_id = -2
+
+s.send(encode4(0xd007d074))
+
 def threadbody():
-    assert parse4(getall(4)) == 0xD007D074
+    assert parse4(getall(4, s)) == 0xD007D074
     while 1:
-        header = getall(6)
+        header = getall(6, s)
         length = parse4(header[0:4])
         typeid = parse2(header[4:6])
-        data = getall(length)
+        data = getall(length, s)
         if typeid == 0x0102:
 			if data in dictionary:
 				del dictionary[data]

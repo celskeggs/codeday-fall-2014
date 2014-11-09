@@ -15,7 +15,7 @@ public class Encoder {
 		if (object.getClass().isArray()) {
 			enc.put((byte) 0x03);
 			enc.putInt(Array.getLength(object));
-			for (int i=0; i<Array.getLength(object); i++) {
+			for (int i = 0; i < Array.getLength(object); i++) {
 				encode(Array.get(object, i), enc);
 			}
 			return;
@@ -23,7 +23,7 @@ public class Encoder {
 		switch (object.getClass().getName()) {
 		case "java.lang.Integer":
 			enc.put((byte) 0x01);
-			enc.putInt((Integer) object); 
+			enc.putInt((Integer) object);
 			break;
 		case "java.lang.Boolean":
 			enc.put((byte) 0x02);
@@ -53,7 +53,7 @@ public class Encoder {
 			return buf.get() != 0;
 		case 0x03:
 			Object[] contents = new Object[buf.getInt()];
-			for (int i=0; i<contents.length; i++) {
+			for (int i = 0; i < contents.length; i++) {
 				contents[i] = decode(buf);
 			}
 			return contents;

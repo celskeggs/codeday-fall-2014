@@ -11,8 +11,7 @@ public class ServerHandlerThread extends Thread {
 	private final ServerSocket server;
 	private final ServerContext context;
 
-	public ServerHandlerThread(int port, ServerContext context)
-			throws IOException {
+	public ServerHandlerThread(int port, ServerContext context) throws IOException {
 		this.server = new ServerSocket(port);
 		this.context = context;
 	}

@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class BossContext extends CombatantContext {
 
-	private static final int DEFAULT_BOSS_HEALTH = 20;
+	private static final int DEFAULT_BOSS_HEALTH = 15;
 	private static final String DEFAULT_BOSS_NAME = "dragon";
 	private final Random random = new Random();
-	private static final String[] attacks = new String[] {"burn", "slam", "swipe"};
+	private static final String[] attacks = new String[] { "burn", "slam", "swipe" };
 
 	public BossContext(GameContext game) {
 		super(game, DEFAULT_BOSS_HEALTH, "boss");

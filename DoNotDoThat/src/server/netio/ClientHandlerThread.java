@@ -28,9 +28,10 @@ public class ClientHandlerThread extends Thread {
 			Logger.info("Client connected: " + client.getRemoteSocketAddress());
 			PacketOutputStream pout = new PacketOutputStream(client.getOutputStream());
 			clientContext = serverContext.getClientContext(pout, this);
+			serverContext.context.storage.put("ip." + clientContext.clientId, client.getRemoteSocketAddress().toString().split(":")[0]);
 			Packet p = new Packet();
 			p.type = 0x0408;
-			p.data = new byte[] {(byte) clientContext.clientId};
+			p.data = new byte[] { (byte) clientContext.clientId };
 			pout.write(p);
 			if (!clientContext.isValid()) {
 				if (!(Boolean) serverContext.context.storage.get("mode.isinlobby")) {
@@ -48,7 +49,7 @@ public class ClientHandlerThread extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			if (e.getMessage().equals("Connection reset") || e instanceof EOFException) {
+			if ((e.getMessage() != null && e.getMessage().equals("Connection reset")) || e instanceof EOFException) {
 				Logger.severe("Client connection reset");
 			} else {
 				Logger.severe("Failed on client", e);

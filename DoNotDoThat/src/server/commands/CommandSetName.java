@@ -15,8 +15,12 @@ public class CommandSetName extends Command {
 		if (name.length() >= 15) {
 			client.receivedChatMessage("That's a terribly long name. Choose a shorter name.");
 		} else if (client.getName() == null) {
+			if (name.toLowerCase().equals("boss")) {
+				this.client.receivedChatMessage("Another player has already taken that name!");
+				return;
+			}
 			for (ClientContext client : client.serverContext.listPlayers()) {
-				if (client != null && name.equals(client.getName())) {
+				if (client != null && client.getName() != null && name.toLowerCase().equals(client.getName().toLowerCase())) {
 					this.client.receivedChatMessage("Another player has already taken that name!");
 					return;
 				}

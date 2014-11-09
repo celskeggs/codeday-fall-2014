@@ -11,6 +11,6 @@ public class CommandHelloWorld extends Command {
 
 	@Override
 	public void process(GameContext context) {
-		context.storage.put("hello." + client.clientId, value.substring(0, 32));
+		context.storage.put("hello." + client.clientId, value.substring(0, Math.min(value.length(), 32)));
 	}
 }
