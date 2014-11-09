@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import server.ClientContext;
 import server.GameContext;
+import server.data.Encoder;
 import server.logger.Logger;
 import server.netio.Packet;
 
@@ -20,8 +21,9 @@ public abstract class Command {
 		}
 		ByteBuffer buf = ByteBuffer.wrap(packet.data);
 		try {
-			return (Command) classes[packet.type].getConstructor(ByteBuffer.class)
-					.newInstance(buf);
+			Object object = Encoder.decode(buf);
+			return (Command) classes[packet.type].getConstructor(Object.class)
+					.newInstance(object);
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
