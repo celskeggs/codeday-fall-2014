@@ -23,6 +23,11 @@ text_input = ""
 y = 420
 
 while 1:
+
+  receive_line = interpreter.client.nextline()
+  if receive_line != None:
+    interpreter.lines.append(line)
+
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:
       display_welcome = False

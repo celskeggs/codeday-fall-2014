@@ -16,6 +16,7 @@ def send(line):
     if words[0].lower() in class_commands:
       if client.dictionary["class.0"] == class_name:
         client.send("attack", (words[0], words[1]))
+
       else:
         lines.append("Your class cannot use that command")
       return
