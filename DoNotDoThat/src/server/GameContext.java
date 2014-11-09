@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import server.data.KeyValueStore;
 import server.logger.Logger;
@@ -13,7 +14,7 @@ public class GameContext {
 	public final BossContext boss = new BossContext(this);
 
 	public static final int turnlen = 20 * 100;
-	
+
 	private CombatantContext[] getCombatants(ServerContext serverContext) {
 		CombatantContext[] players = serverContext.listPlayers();
 		CombatantContext[] out = new CombatantContext[players.length + 1];
@@ -77,7 +78,12 @@ public class GameContext {
 	}
 
 	public void processTurn(ServerContext server, CombatantContext[] players) {
-		this.sendMessage(server, "[SUPREME SERVER MONKEY] TURN IS HAPPENING");
+		this.sendMessage(server, "[SUPREME SERVER MONKEY] A turn is happening!");
+		for (CombatantContext comb : getCombatants(server)) {
+			if (comb != null) {
+				comb.applyStatusEffects(server);
+			}
+		}
 		for (CombatantContext comb : getCombatants(server)) {
 			if (comb != null) {
 				handleCombatant(server, getCombatants(server), comb);
@@ -101,6 +107,11 @@ public class GameContext {
 						"[SUPREME SERVER MONKEY] " + player.getName()
 								+ " tried to attack " + target.getName()
 								+ ", but is dead!");
+			} else if (player.wasParalyzed()) {
+				this.sendMessage(server,
+						"[SUPREME SERVER MONKEY] " + player.getName()
+								+ " tried to attack " + target.getName()
+								+ ", but is paralyzed!");
 			} else {
 				String str = player.getClassName() + "." + command;
 				Integer dmgO = commandDamage.get(str);
@@ -108,9 +119,12 @@ public class GameContext {
 					Logger.warning("WARNING: NO SUCH COMMAND: " + str);
 				} else {
 					int dmg = dmgO;
-					this.sendMessage(server, target.getName() + " was hit by "
-							+ player.getName() + " for " + dmg + "!");
-					target.setHealth(target.getHealth() - dmg);
+					if (!doSpecialAttack(server, target, player, str) || dmg != 0) {
+						this.sendMessage(server, target.getName()
+								+ " was hit by " + player.getName() + " for "
+								+ dmg + "!");
+						target.setHealth(target.getHealth() - dmg);
+					}
 				}
 			}
 		} else if (!player.isDead()) {
@@ -207,6 +221,88 @@ public class GameContext {
 			commandDamage.put(cmd, 3);
 		}
 	}
+	
+	private final Random rand = new Random();
+	
+	private boolean prob(int prec) {
+		return rand.nextInt(100) < prec;
+	}
+
+	private boolean doSpecialAttack(ServerContext server, CombatantContext target,
+			CombatantContext attacker, String cmd) {
+		switch (cmd) {
+		case "wizard.burn":
+			if (prob(20)) {
+				sendMessage(server, attacker.getName() + " burns " + target.getName() + "!");
+				target.applyStatusEffect("burn", 3);
+				return true;
+			}
+			break;
+		case "wizard.grind":
+			if (prob(1)) {
+				sendMessage(server, attacker.getName() + " INSTAKILLS " + target.getName() + "!");
+				return true;
+			}
+			break;
+		case "wizard.drown":
+			if (prob(20)) {
+				sendMessage(server, attacker.getName() + " nearly drowns " + target.getName() + "!");
+				target.applyStatusEffect("paralyze", 1);
+				return true;
+			}
+			break;
+		case "wizard.zap":
+			if (prob(60)) {
+				sendMessage(server, attacker.getName() + " zaps " + target.getName() + "!");
+				target.applyStatusEffect("paralyze", 1);
+				return true;
+			}
+			break;
+		case "soldier.bombard":
+			if (prob(10)) {
+				sendMessage(server, attacker.getName() + " bombards (and burns) " + target.getName() + "!");
+				target.applyStatusEffect("burn", 3);
+				return true;
+			}
+			break;
+		case "soldier.stun":
+			if (prob(60)) {
+				sendMessage(server, attacker.getName() + " stuns " + target.getName() + "!");
+				target.applyStatusEffect("paralyze", 1);
+				return true;
+			}
+			break;
+		case "ranger.slash":
+			if (prob(20)) {
+				sendMessage(server, attacker.getName() + " slashes " + target.getName() + "!");
+				target.applyStatusEffect("bleed", 3);
+				return true;
+			}
+			break;
+		case "ranger.kick":
+			if (prob(60)) {
+				sendMessage(server, attacker.getName() + " visciously kicks " + target.getName() + "!");
+				target.applyStatusEffect("paralyze", 1);
+				return true;
+			}
+			break;
+		case "robot.inhale":
+			if (prob(10)) {
+				sendMessage(server, attacker.getName() + " inhales " + target.getName() + "!");
+				target.applyStatusEffect("paralyze", 1);
+				return true;
+			}
+			break;
+		case "robot.burn":
+			if (prob(80)) {
+				sendMessage(server, attacker.getName() + " burns " + target.getName() + "!");
+				target.applyStatusEffect("burn", 3);
+				return true;
+			}
+			break;
+		}
+		return false;
+	}
 
 	public void queueAttack(ClientContext client, String cmdname, String who) {
 		String cls = (String) storage.get("class." + client.clientId);
@@ -216,7 +312,8 @@ public class GameContext {
 			return;
 		}
 		storage.put("attack." + client.clientId, cmdname);
-		CombatantContext out = getCombatant(getCombatants(client.serverContext), client, who);
+		CombatantContext out = getCombatant(
+				getCombatants(client.serverContext), client, who);
 		if (out != null) {
 			storage.put("target." + client.clientId, out.getID());
 		} else {

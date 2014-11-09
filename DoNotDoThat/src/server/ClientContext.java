@@ -83,7 +83,7 @@ public class ClientContext extends CombatantContext {
 	public void resetCombatant() {
 		serverContext.context.storage.remove("class." + clientId);
 		serverContext.context.storage.put("isready." + clientId, false);
-		setHealth(DEFAULT_PLAYER_HEALTH);
+		resetStatusAndHealth(DEFAULT_PLAYER_HEALTH);
 	}
 
 	@Override

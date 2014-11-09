@@ -1,19 +1,74 @@
 package server;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import server.logger.Logger;
+
 public abstract class CombatantContext {
 	protected final GameContext game;
 	private String uid;
+	private static final List<String> statusEffects = Arrays.asList("burn",
+			"bleed", "paralyze");
+	private boolean wasParalyzed;
 
 	public CombatantContext(GameContext game, int health, String uid) {
 		this.game = game;
 		this.uid = uid;
+		resetStatusAndHealth(health);
+	}
+
+	protected void resetStatusAndHealth(int health) {
 		this.setHealth(health);
+		for (String elem : statusEffects) {
+			setStatus(elem, 0);
+		}
+		wasParalyzed = false;
+	}
+
+	public void applyStatusEffects(ServerContext context) {
+		wasParalyzed = false;
+		for (String effect : statusEffects) {
+			int len = getStatus(effect);
+			if (len > 0) {
+				applyStatusEffect(context, effect);
+				setStatus(effect, len - 1);
+			}
+		}
+	}
+	
+	private void applyStatusEffect(ServerContext context, String effect) {
+		switch (effect) {
+		case "burn":
+			context.context.sendMessage(context, getName() + " burns for 1 damage!");
+			setHealth(getHealth() - 1);
+			break;
+		case "bleed":
+			context.context.sendMessage(context, getName() + " bleeds for 1 damage!");
+			setHealth(getHealth() - 1);
+			break;
+		case "paralyze":
+			wasParalyzed = true;
+			break;
+		default:
+			Logger.warning("Unrecognized status effect: " + effect);
+			break;
+		}
+	}
+
+	public int getStatus(String name) {
+		return (Integer) game.storage.get("status." + name + "." + uid);
+	}
+	
+	public void setStatus(String name, int turns) {
+		game.storage.put("status." + name + "." + uid, turns);
 	}
 
 	public int getHealth() {
 		return (int) game.storage.get("health." + uid);
 	}
-	
+
 	public boolean isDead() {
 		return (boolean) game.storage.get("isdead." + uid);
 	}
@@ -36,5 +91,13 @@ public abstract class CombatantContext {
 
 	public void updateIsDead() {
 		game.storage.put("isdead." + uid, getHealth() <= 0);
+	}
+
+	public boolean wasParalyzed() {
+		return wasParalyzed;
+	}
+
+	public void applyStatusEffect(String name, int upto) {
+		setStatus(name, Math.max(getStatus(name), upto));
 	}
 }
