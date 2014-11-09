@@ -3,26 +3,28 @@ pygame.init()
 
 size = 1024, 600
 screen = pygame.display.set_mode(size)
-background = pygame.Surface(screen.get_size())
-background = background.convert()
+font = pygame.font.SysFont('monospace', 16)
+backgroundAlive = pygame.Surface(screen.get_size())
+backgroundAlive = backgroundAlive.convert()
+backgroundAlive.fill((0, 0, 0))
+backgroundDead = pygame.Surface(screen.get_size())
+backgroundDead = backgroundDead.convert()
+backgroundDead.fill((64, 0, 0))
 green = (0, 255, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
 white = (255, 255, 255)
-color = [green, red, blue, white]
+yellow = (255, 255, 0)
+color = [green, red, blue, white, yellow]
 
 display_welcome = True
 
 pygame.display.set_caption('Do that and Die')
 
-background.fill((0, 0, 0))
-
-font = pygame.font.SysFont('monospace', 16)
 welcome = font.render("Fight your friends. And the boss.", 0, green)
-
-textpos = welcome.get_rect()
-textpos.centerx = background.get_rect().centerx
-textpos.centery = background.get_rect().centery
+welcomepos = welcome.get_rect()
+welcomepos.centerx = screen.get_rect().centerx
+welcomepos.centery = screen.get_rect().centery
 
 status_lobby = font.render("LOBBY", 0, green)
 status_not = font.render("BATTLE", 0, green)
@@ -56,28 +58,34 @@ while 1:
       sys.exit()
 
   text = font.render(text_input, 0, green)
-  screen.blit(background, (0, 0))
+  screen.blit(backgroundDead if not interpreter.client.dictionary["mode.isinlobby"] and interpreter.client.my("isdead", False) else backgroundAlive, (0, 0))
   screen.blit(text, (5, size[1] - font.get_height()))
 
-  if is_in_lobby == True:
-    screen.blit(status_lobby, (size[0] - status_lobby.get_width(), 0))
-  elif is_in_lobby == False:
-    screen.blit(status_not, (size[0] - status_not.get_width(), 0))
-    screen.blit(countdown, (size[0] - countdown.get_width(), (background.get_rect().centery - font.get_height() *4)))
+  if is_in_lobby:
+    screen.blit(status_lobby, (size[0] - status_lobby.get_width() - 10, 0))
+  else:
+    screen.blit(status_not, (size[0] - status_not.get_width() - 10, 0))
+    screen.blit(countdown, (size[0] - countdown.get_width() - 10, (screen.get_rect().centery + font.get_height() * 4)))
 
-  for i in range(0, 4):
-    if interpreter.client.dictionary.get("connected." + str(i), False):
-      player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "None") + ": " +
-                                interpreter.client.dictionary.get("class." + str(i), "No Class Picked")
+  for i in [0, 1, 2, 3, 4]:
+    n = "boss" if i == 4 else str(i)
+    if interpreter.client.dictionary.get("connected." + n, False) or n == "boss":
+      player_list = font.render(interpreter.client.dictionary.get("name." + n, "None") + ": " +
+                                interpreter.client.dictionary.get("class." + n, "No Class Picked")
                                 , 0, color[i])
-      player_health = font.render("Health: " + str(interpreter.client.dictionary.get("health." + str(i), "")), 0, color[i])
-      screen.blit(player_list, (size[0] - player_list.get_width(),
-                                               (background.get_rect().centery - (font.get_height() * ((i * 2) - 1)))))
-      screen.blit(player_health, (size[0] - player_health.get_width(),
-                                 (background.get_rect().centery - font.get_height() * ((i * 2) - 2))))
+      health = interpreter.client.dictionary.get("health." + n, None)
+      if health == None:
+        health = "???"
+      elif health <= 0:
+        health = "*DEAD*"
+      player_health = font.render("Health: " + str(health), 0, color[i])
+      screen.blit(player_list, (size[0] - player_list.get_width() - 10,
+                                               (screen.get_rect().centery - (font.get_height() * ((i * 2) - 1)))))
+      screen.blit(player_health, (size[0] - player_health.get_width() - 10,
+                                 (screen.get_rect().centery - font.get_height() * ((i * 2) - 2))))
 
   if display_welcome == True:
-    screen.blit(welcome, textpos)
+    screen.blit(welcome, welcomepos)
 
   for i, line in enumerate(interpreter.lines, 1):
     new_line = font.render(line, 0, green)

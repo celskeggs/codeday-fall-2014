@@ -58,8 +58,13 @@ def nextline():
         return chatlines.get_nowait()
     except Queue.Empty:
         return None
-def my(x):
-    return dictionary["%s.%d" % (x, local_id)]
+_sentinel = object()
+def my(prefix, default=_sentinel):
+	key = "%s.%d" % (prefix, local_id)
+	if default == _sentinel:
+		return dictionary[key]
+	else:
+		return dictionary.get(key, default)
 thread = threading.Thread(target=threadbody)
 thread.daemon = True
 thread.start()

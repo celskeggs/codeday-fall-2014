@@ -4,8 +4,10 @@ commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["s
 
 def send(line):
   print line
-  lines.append(line)
   words = line.split()
+  if not words:
+    return
+  lines.append(line)
   was_byp = False
   was_found = False
   for class_name, class_commands in commands.items():
@@ -42,7 +44,7 @@ def send(line):
       client.send("class", classname)
   elif words[0].lower() == "exit":
     sys.exit()
-  elif client.my("class") != None and words[0].lower() == "commands":
+  elif client.my("class") != None and words[0].lower() in ("help", "commands"):
     for command in commands[client.my("class")]:
       lines.append(command)
   else:

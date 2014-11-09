@@ -48,7 +48,7 @@ public class GameContext {
 			}
 		} else {
 			int countdown = (int) storage.get("mode.countdown");
-			int needed = 0;
+			int needed = 0, has = 0;
 			for (int i = 0; i < players.length; i++) {
 				if (players[i] != null
 						&& !(Boolean) storage.get("connected." + i)
@@ -60,8 +60,11 @@ public class GameContext {
 									+ " suffered a sudden heart attack due to disconnecting!");
 					storage.put("health." + i, 0);
 				}
-				if (storage.get("attack." + i) != null) {
+				if (!players[i].isDead()) {
 					needed++;
+					if (storage.get("attack." + i) != null) {
+						has++;
+					}
 				}
 				if (players[i] != null) {
 					players[i].updateIsDead();
@@ -69,7 +72,7 @@ public class GameContext {
 			}
 			boss.updateIsDead();
 			storage.put("attack.total", needed);
-			if (needed >= count || countdown <= 0) { // TURN OVER
+			if (has >= needed || countdown <= 0) { // TURN OVER
 				processTurn(serverContext, players);
 			} else {
 				storage.put("mode.countdown", countdown - 1);

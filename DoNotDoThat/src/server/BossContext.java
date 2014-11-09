@@ -12,6 +12,7 @@ public class BossContext extends CombatantContext {
 	public BossContext(GameContext game) {
 		super(game, DEFAULT_BOSS_HEALTH, "boss");
 		game.storage.put("name.boss", DEFAULT_BOSS_NAME);
+		game.storage.put("class.boss", "boss");
 	}
 
 	@Override
