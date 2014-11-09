@@ -95,7 +95,7 @@ while 1:
       if health == None:
         health = "???"
       elif health <= 0:
-        health = "*DEAD*"
+        health = "***DEAD***"
       else:
         health = str(health)
       if interpreter.client.dictionary.get("status.bleed." + n, 0) > 0:
