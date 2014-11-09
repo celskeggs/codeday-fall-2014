@@ -27,14 +27,14 @@ color = [green, red, blue, white, yellow]
 
 display_welcome = True
 
-pygame.display.set_caption('Do that and Die')
+pygame.display.set_caption("DON'T DO THAT")
 
 welcome = font.render("fight your friends. kill the boss.", 0, green)
 welcomepos = welcome.get_rect()
 welcomepos.centerx = screen.get_rect().centerx
 welcomepos.centery = screen.get_rect().centery
 
-beta = font.render("beta 1", 0, yellow)
+beta = font.render("beta 3", 0, yellow)
 betapos = beta.get_rect()
 betapos.centerx = screen.get_rect().centerx
 betapos.centery = screen.get_rect().centery + font.get_height()

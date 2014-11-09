@@ -14,7 +14,7 @@ def send(line):
     if words[0].lower() in class_commands:
       if len(words) < 2:
         lines.append("You need to specify a target")
-      elif client.my("class") == class_name:
+      elif client.my("class", None) == class_name:
           client.send("attack", (words[0], words[1]))
       else:
         was_byp = True
@@ -51,20 +51,20 @@ def send(line):
     lines.append("")
     lines.append("")
     lines.append("")
-    lines.append("BLUE~------------------------------")
-    lines.append("BLUE~Choose your name")
-    lines.append("BLUE~Type '~GREEN~name~BLUE~' then your choice of name")
-    lines.append("BLUE~Choose your class")
-    lines.append("BLUE~You may pick between a Wizard, Ranger, Soldier, and Robot")
-    lines.append("BLUE~Choose by typing '~GREEN~class~BLUE~' then your choice")
-    lines.append("BLUE~Try to be the last man standing")
-    lines.append("BLUE~Use your moves to injure your enemies")
-    lines.append("BLUE~See your list of moves by typing '~GREEN~commands~BLUE~'")
-    lines.append("BLUE~To attack, type your move and the specified target, either '~GREEN~boss~BLUE~' or a player's name")
-    lines.append("BLUE~To chat, type '~GREEN~say~BLUE~' then your message")
-    lines.append("BLUE~Start the game by typing '~GREEN~enter~BLUE~'")
-    lines.append("BLUE~Have fun")
-    lines.append("BLUE~------------------------------")
+    lines.append("YELLOW~------------------------------")
+    lines.append("YELLOW~Choose your name")
+    lines.append("YELLOW~Type '~RED~name~YELLOW~' then your choice of name")
+    lines.append("YELLOW~Choose your class")
+    lines.append("YELLOW~You may pick between a ~RED~Wizard~YELLOW~, ~RED~Ranger~YELLOW~, ~RED~Soldier~YELLOW~, or ~RED~Robot")
+    lines.append("YELLOW~Choose by typing '~RED~class~YELLOW~' then your choice")
+    lines.append("YELLOW~Try to be the last man standing")
+    lines.append("YELLOW~Use your moves to injure your enemies")
+    lines.append("YELLOW~See your list of moves by typing '~RED~commands~YELLOW~'")
+    lines.append("YELLOW~To attack, type your move and the specified target, either '~RED~boss~YELLOW~' or a player's name")
+    lines.append("YELLOW~To chat, type '~RED~say~YELLOW~' then your message")
+    lines.append("YELLOW~Start the game by typing '~RED~enter~YELLOW~'")
+    lines.append("YELLOW~Have fun")
+    lines.append("YELLOW~------------------------------")
     lines.append("")
     lines.append("")
     lines.append("")
