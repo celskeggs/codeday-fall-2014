@@ -58,6 +58,7 @@ def send(line):
     lines.append("See your list of moves by typing 'commands'")
     lines.append("To attack, type your move and the specified target, either 'boss' or a player's name")
     lines.append("To chat, type 'say' then your message")
+    lines.append("Start the game by typing 'enter'")
     lines.append("Have fun")
   else:
     lines.append("------Unrecognizable Command------")
