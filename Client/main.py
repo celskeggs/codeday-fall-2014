@@ -32,7 +32,7 @@ while 1:
   is_in_lobby = client.dictionary.get("mode.isinlobby", True)
   receive_line = interpreter.client.nextline()
   if receive_line != None:
-    interpreter.lines.append(line)
+    interpreter.lines.append(receive_line)
 
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:
