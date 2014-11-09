@@ -1,4 +1,4 @@
-import sys, pygame, interpreter
+import sys, pygame, interpreter, client
 pygame.init()
 
 size = 640, 480
@@ -19,11 +19,17 @@ textpos = welcome.get_rect()
 textpos.centerx = background.get_rect().centerx
 textpos.centery = background.get_rect().centery
 
+status_lobby = font.render("Lobby", 0, green)
+status_not = font.render("BATTLE", 0, green)
+
+
+
 text_input = ""
 y = 420
 
 while 1:
 
+  is_in_lobby = client.dictionary.get("mode.isinlobby", True)
   receive_line = interpreter.client.nextline()
   if receive_line != None:
     interpreter.lines.append(line)
@@ -42,6 +48,10 @@ while 1:
   text = font.render(text_input, 0, green)
   screen.blit(background, (0, 0))
   screen.blit(text, (5, 480 - font.get_height()))
+  if is_in_lobby == True:
+    screen.blit(status_lobby, (640 - status_lobby.get_width(), 0))
+  elif is_in_lobby == False:
+    screen.blit(status_not, (640 - status_not.get_width(), 0))
   if display_welcome == True:
     screen.blit(welcome, textpos)
 
