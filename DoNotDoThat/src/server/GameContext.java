@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import server.data.KeyValueStore;
+import server.logger.Logger;
 
 public class GameContext {
 	public final KeyValueStore storage = new KeyValueStore();
@@ -38,9 +39,14 @@ public class GameContext {
 			int countdown = (int) storage.get("mode.countdown");
 			int needed = 0;
 			for (int i = 0; i < players.length; i++) {
-				if (players[i] != null && !(Boolean) storage.get("connected." + i) && (Integer) storage.get("health." + i) > 0) {
-					this.sendMessage(serverContext, "[SUPREME SERVER MONKEY] "
-							+ players[i].getName() + " suffered a sudden heart attack due to disconnecting!");
+				if (players[i] != null
+						&& !(Boolean) storage.get("connected." + i)
+						&& (Integer) storage.get("health." + i) > 0) {
+					this.sendMessage(
+							serverContext,
+							"[SUPREME SERVER MONKEY] "
+									+ players[i].getName()
+									+ " suffered a sudden heart attack due to disconnecting!");
 					storage.put("health." + i, 0);
 				}
 				if (storage.get("attack." + i) != null) {
@@ -72,12 +78,17 @@ public class GameContext {
 								+ players[i].getName() + " tried to attack "
 								+ target.getName() + ", but is dead!");
 					} else {
-						int dmg = commandDamage.get(storage.get("class." + i)
-								+ "." + command);
-						this.sendMessage(server, target.getName()
-								+ " was hit by " + players[i].getName()
-								+ " for " + dmg + "!");
-						target.setHealth(target.getHealth() - dmg);
+						String str = storage.get("class." + i) + "." + command;
+						Integer dmgO = commandDamage.get(str);
+						if (dmgO == null) {
+							Logger.warning("WARNING: NO SUCH COMMAND: " + str);
+						} else {
+							int dmg = dmgO;
+							this.sendMessage(server, target.getName()
+									+ " was hit by " + players[i].getName()
+									+ " for " + dmg + "!");
+							target.setHealth(target.getHealth() - dmg);
+						}
 					}
 					continue;
 				}
