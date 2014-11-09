@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import socket, threading, decode
+import socket, threading, decode, Queue
 
 s = socket.socket()        
 host = ("10.251.14.147")
@@ -8,6 +8,7 @@ port = 50000
 s.connect((host, port))
 
 dictionary = {}
+chatlines = Queue.Queue()
 
 def encode2(x):
     return chr((x >> 8) & 0xFF) + chr(x & 0xFF)
@@ -43,16 +44,22 @@ def threadbody():
             key = data[1:namelen+1]
             body = data[namelen+1:]
             dictionary[key] = decode.decode(body)
+		elif typeid == 0x0306:
+			chatlines.put(data)
         else:
             raise Exception("unhandled data command: %d" % typeid)
+def nextline():
+	try:
+		return chatlines.get_nowait()
+	except Queue.Empty:
+		return None
 thread = threading.Thread(target=threadbody)
 thread.start()
 
-commands = ["hello", "enter", "attack"]
+commands = ["hello", "enter", "attack", "chat"]
 
 def sendraw(typeid,data):
     length = len(data)
     s.send(encode4(length) + encode2(typeid) + data)
 def send(cmd, data):
     sendraw(commands.index(cmd), decode.encode(data))
-

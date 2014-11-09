@@ -68,12 +68,8 @@ public class ServerContext {
 		return clients[clientId];
 	}
 
-	public boolean[] listPlayers() {
-		boolean[] out = new boolean[clients.length];
-		for (int i=0; i<out.length; i++) {
-			out[i] = clients[i] != null;
-		}
-		return out;
+	public ClientContext[] listPlayers() {
+		return clients;
 	}
 
 	public void initGame() {

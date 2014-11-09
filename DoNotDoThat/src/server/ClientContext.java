@@ -4,11 +4,12 @@ import java.io.IOException;
 
 import server.logger.Logger;
 import server.netio.ClientHandlerThread;
+import server.netio.Packet;
 import server.netio.PacketOutputStream;
 
 public class ClientContext {
 
-	private final ServerContext serverContext;
+	public final ServerContext serverContext;
 	public final int clientId;
 	private final PacketOutputStream packetOutputStream;
 	private final ClientHandlerThread handler;
@@ -43,4 +44,15 @@ public class ClientContext {
 		serverContext.clientTerminated(clientId, this);
 	}
 
+	public void receivedChatMessage(String string) {
+		Packet p = new Packet();
+		p.type = 0x0306;
+		p.data = string.getBytes();
+		try {
+			packetOutputStream.write(p);
+		} catch (IOException ex) {
+			Logger.warning("Terminating client due to IO exception: " + this, ex);
+			this.terminate();
+		}
+	}
 }

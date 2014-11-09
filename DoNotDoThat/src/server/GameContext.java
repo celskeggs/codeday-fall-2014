@@ -6,11 +6,11 @@ public class GameContext {
 	public final KeyValueStore storage = new KeyValueStore();
 	
 	public void processGame(ServerContext serverContext) {
-		boolean[] out = serverContext.listPlayers();
+		ClientContext[] out = serverContext.listPlayers();
 		int count = 0, ready = 0;
 		for (int i = 0; i < out.length; i++) {
-			storage.put("connected." + i, out[i]);
-			if (out[i]) {
+			storage.put("connected." + i, out[i] != null);
+			if (out[i] != null) {
 				count++;
 				Boolean b = (Boolean) storage.get("isready." + i);
 				if (b != null && b) {
@@ -37,5 +37,11 @@ public class GameContext {
 	public void queueAttack(ClientContext client, String cmdname) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void sendChatMessage(ClientContext client, String textline) {
+		for (ClientContext target : client.serverContext.listPlayers()) {
+			target.receivedChatMessage("[" + target.clientId + "] " + textline);
+		}
 	}
 }
