@@ -47,9 +47,9 @@ def threadbody():
             dictionary[key] = decode.decode(body)
         elif typeid == 0x0306:
             chatlines.put(data)
-		elif typeid == 0x0408:
-			global local_id
-			local_id = ord(data[0])
+        elif typeid == 0x0408:
+            global local_id
+            local_id = ord(data[0])
         else:
             raise Exception("unhandled data command: %d" % typeid)
 def nextline():
@@ -58,7 +58,7 @@ def nextline():
     except Queue.Empty:
         return None
 def my(x):
-	return dictionary["%s.%d" % (x, local_id)]
+    return dictionary["%s.%d" % (x, local_id)]
 thread = threading.Thread(target=threadbody)
 thread.start()
 
