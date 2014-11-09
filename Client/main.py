@@ -45,9 +45,15 @@ while 1:
         text_input = ""
       elif event.key == pygame.K_BACKSPACE:
         text_input = text_input[:-1]
+      elif event.key == pygame.K_ESCAPE:
+        interpreter.client.close()
+        sys.exit()
       else:
         text_input = text_input + event.unicode
-    if event.type == pygame.QUIT: sys.exit()
+
+    if event.type == pygame.QUIT:
+      interpreter.client.close()
+      sys.exit()
 
   text = font.render(text_input, 0, green)
   screen.blit(background, (0, 0))

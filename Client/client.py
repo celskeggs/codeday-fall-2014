@@ -2,7 +2,7 @@
 
 import socket, threading, decode, Queue
 
-s = socket.socket()        
+s = socket.socket()
 host = ("10.251.14.147")
 port = 50000
 s.connect((host, port))
@@ -69,3 +69,7 @@ def sendraw(typeid,data):
     s.send(encode4(length) + encode2(typeid) + data)
 def send(cmd, data):
     sendraw(commands.index(cmd), decode.encode(data))
+
+def close():
+    s.close()
+

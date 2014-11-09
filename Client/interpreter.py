@@ -5,7 +5,7 @@ commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["s
 wizard_commands = ['burn', "grind", "drown", "blast", "zap"]
 soldier_commands = ["shoot", "bombard", "punch", "kick", "stun"]
 ranger_commands = ["draw", "shank", "slash", "throw", "kick"]
-robot_commands = ["pew", "pewpew", "pewpewpew", "pewpewpewpew", "pow"]
+robot_commands = ["pew", "pewpew", "inhale", "cook", "burn"]
 
 
 def send(line):
@@ -26,13 +26,18 @@ def send(line):
     client.send("hello", 20)
   elif words[0].lower() == "enter":
     client.send("enter", None)
-  elif words[0].lower() == "setname":
+  elif words[0].lower() == "name":
     if len(words) < 2:
       lines.append("You need to specify a username as a second parameter")
     else:
       username = words[1]
       client.send("name", username)
-  elif words[0].lower() == "setclass":
+  elif words[0].lower() == "say":
+    if len(words) < 2:
+      lines.append("You need to specify something to say")
+    else:
+      client.send("chat", " ".join(words[1:]))
+  elif words[0].lower() == "class":
     if len(words) < 2:
       lines.append("You need to specify a username as a second parameter")
     else:
