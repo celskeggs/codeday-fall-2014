@@ -3,7 +3,7 @@ pygame.init()
 
 size = 1024, 600
 screen = pygame.display.set_mode(size)
-font = pygame.font.SysFont('monospace', 16)
+font = pygame.font.SysFont('monospace', 26)
 backgroundAlive = pygame.Surface(screen.get_size())
 backgroundAlive = backgroundAlive.convert()
 backgroundAlive.fill((0, 0, 0))
@@ -21,10 +21,12 @@ display_welcome = True
 
 pygame.display.set_caption('Do that and Die')
 
-welcome = font.render("Fight your friends. And the boss.", 0, green)
+welcome = font.render("Fight your friends. Kill the boss.", 0, green)
 welcomepos = welcome.get_rect()
 welcomepos.centerx = screen.get_rect().centerx
 welcomepos.centery = screen.get_rect().centery
+
+font = pygame.font.SysFont('monospace', 16)
 
 status_lobby = font.render("LOBBY", 0, green)
 status_not = font.render("BATTLE", 0, green)
