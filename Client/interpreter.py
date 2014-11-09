@@ -1,5 +1,6 @@
 import client
 lines = ['']
+commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "pewpewpew", "pewpewpewpew", "pow"]}
 
 wizard_commands = ['burn', "grind", "drown", "blast", "zap"]
 soldier_commands = ["shoot", "bombard", "punch", "kick", "stun"]
@@ -7,19 +8,20 @@ ranger_commands = ["draw", "shank", "slash", "throw", "kick"]
 robot_commands = ["pew", "pewpew", "pewpewpew", "pewpewpewpew", "pow"]
 
 
-def send(line): # the player typed a message
+def send(line):
   print line
   lines.append(line)
   words = line.split()
-  if words[0].lower() == "burn":
-
-  elif words[0].lower() == "grind":
-
-  elif words[0].lower() == "drown":
-
-  elif words[0].lower() == "blast":
-
-  elif words[0].lower() == "zap":
-
+  for class_name, class_commands in commands.items():
+    if words[0].lower() in class_commands:
+      if client.dictionary["class.0"] == class_name:
+        client.send("attack", (words[0], words[1]))
+      else:
+        lines.append("Your class cannot use that command")
+      return
+  if words[0].lower() == "hello":
+    client.send("hello", 20)
+  elif words[0].lower() == "enter":
+    client.send("enter", None)
   else:
-    lines.append("What?")
+    lines.append("------Unrecognizable Command------")
