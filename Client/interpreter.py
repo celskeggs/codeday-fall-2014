@@ -14,11 +14,13 @@ def send(line):
   words = line.split()
   for class_name, class_commands in commands.items():
     if words[0].lower() in class_commands:
-      if client.dictionary["class.0"] == class_name:
-        client.send("attack", (words[0], words[1]))
+      if len(words) < 2:
+        lines.append("You need to specify a target")
+      elif client.dictionary["class.0"] == class_name:
+          client.send("attack", (words[0], words[1]))
 
       else:
-        lines.append("Your class cannot use that command")
+          lines.append("Your class cannot use that command")
       return
   if words[0].lower() == "hello":
     client.send("hello", 20)
