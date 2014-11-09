@@ -17,14 +17,14 @@ pygame.display.set_caption('Do that and Die')
 
 background.fill((0, 0, 0))
 
-font = pygame.font.SysFont('monospace', 18)
-welcome = font.render("Welcome to this Text-based Game", 0, green)
+font = pygame.font.SysFont('monospace', 16)
+welcome = font.render("Fight your friends. And the boss.", 0, green)
 
 textpos = welcome.get_rect()
 textpos.centerx = background.get_rect().centerx
 textpos.centery = background.get_rect().centery
 
-status_lobby = font.render("Lobby", 0, green)
+status_lobby = font.render("LOBBY", 0, green)
 status_not = font.render("BATTLE", 0, green)
 
 text_input = ""
