@@ -71,7 +71,7 @@ while 1:
       sys.exit()
 
   text = font.render("> " + text_input, 0, green)
-  screen.blit(backgroundDead if not interpreter.client.dictionary["mode.isinlobby"] and interpreter.client.my("isdead", False) else backgroundAlive, (0, 0))
+  screen.blit(backgroundDead if not is_in_lobby and interpreter.client.my("isdead", False) else backgroundAlive, (0, 0))
   screen.blit(text, (5, size[1] - font.get_height()))
 
   if is_in_lobby:
@@ -82,6 +82,11 @@ while 1:
 
   for i in [0, 1, 2, 3, 4]:
     n = "boss" if i == 4 else str(i)
+    if i != 4:
+      player_level = font.render("Level: " + str(interpreter.client.dictionary.get
+                               ("level." + interpreter.client.dictionary.get("ip." + str(i), ""), 1)), 0, color[i])
+      screen.blit(player_level, (size[0] - player_level.get_width() - 10,
+                                 (screen.get_rect().centery - font.get_height() * ((i * 3) - 3))))
     if interpreter.client.dictionary.get("connected." + n, False) or n == "boss":
       player_list = font.render(interpreter.client.dictionary.get("name." + n, "none") + ": " +
                                 interpreter.client.dictionary.get("class." + n, "no class picked")
@@ -90,7 +95,7 @@ while 1:
       if health == None:
         health = "???"
       elif health <= 0:
-        health = "*DEAD*"
+        health = "***DEAD***"
       else:
         health = str(health)
       if interpreter.client.dictionary.get("status.bleed." + n, 0) > 0:
@@ -103,9 +108,10 @@ while 1:
         health += " [READY]"
       player_health = font.render("Health: " + str(health), 0, color[i])
       screen.blit(player_list, (size[0] - player_list.get_width() - 10,
-                                               (screen.get_rect().centery - (font.get_height() * ((i * 2) - 1)))))
+                                 (screen.get_rect().centery - (font.get_height() * ((i * 3) - 1)))))
       screen.blit(player_health, (size[0] - player_health.get_width() - 10,
-                                 (screen.get_rect().centery - font.get_height() * ((i * 2) - 2))))
+                                 (screen.get_rect().centery - font.get_height() * ((i * 3) - 2))))
+
 
   if client.my("status.bleed", 0) > 0:
     player_bleed = font.render("you are now bleeding".upper(), 0, red)
