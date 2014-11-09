@@ -48,6 +48,9 @@ def send(line):
     for command in commands[client.my("class")]:
       lines.append(command)
   elif words[0].lower() == "help":
+    lines.append("")
+    lines.append("")
+    lines.append("")
     lines.append("------------------------------")
     lines.append("Choose your name")
     lines.append("Type 'name' then your choice of name")
@@ -62,5 +65,8 @@ def send(line):
     lines.append("Start the game by typing 'enter'")
     lines.append("Have fun")
     lines.append("------------------------------")
+    lines.append("")
+    lines.append("")
+    lines.append("")
   else:
     lines.append("------Unrecognizable Command------")
