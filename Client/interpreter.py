@@ -28,9 +28,7 @@ def send(line):
       was_found = True
       return
   if was_byp and not was_found:
-    lines.append("Your class cannot use that command")
-  elif words[0].lower() == "hello":
-    client.send("hello", 20)
+    lines.append("Your class can't do that.")
   elif words[0].lower() == "enter":
     client.send("enter", None)
   elif words[0].lower() == "name":
@@ -41,7 +39,7 @@ def send(line):
       client.send("name", username)
   elif words[0].lower() == "say":
     if len(words) < 2:
-      lines.append("You need to specify something to say")
+      lines.append("Sure, what are you going to say?")
     else:
       client.send("chat", " ".join(words[1:]))
   elif words[0].lower() == "class":

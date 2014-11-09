@@ -13,12 +13,12 @@ color = [green, red, blue, white]
 
 display_welcome = True
 
-pygame.display.set_caption('Do that and Die')
+pygame.display.set_caption("Don't Do That.")
 
 background.fill((0, 0, 0))
 
 font = pygame.font.SysFont('monospace', 18)
-welcome = font.render("Welcome to this Text-based Game", 0, green)
+welcome = font.render("Don't Do That.", 0, green)
 
 textpos = welcome.get_rect()
 textpos.centerx = background.get_rect().centerx
