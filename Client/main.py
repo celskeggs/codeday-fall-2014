@@ -15,6 +15,7 @@ red = (255, 0, 0)
 blue = (0, 0, 255)
 white = (255, 255, 255)
 yellow = (255, 255, 0)
+orange = (255, 127, 0)
 color = [green, red, blue, white, yellow]
 
 display_welcome = True
@@ -91,6 +92,15 @@ while 1:
       screen.blit(player_health, (size[0] - player_health.get_width() - 10,
                                  (screen.get_rect().centery - font.get_height() * ((i * 2) - 2))))
 
+  if client.my("status.bleed", 0) > 0:
+    player_bleed = font.render("You are now bleeding", 0, red)
+    screen.blit(player_bleed, (0, screen.get_rect().centery))
+  elif client.my("status.burn", 0) > 0:
+    player_burn = font.render("You have been burnt", 0, orange)
+    screen.blit(player_burn, (font.get_height(), screen.get_rect().centery))
+  elif client.my("status.paralyze", 0) > 0:
+    player_paralyze = font.render("You have been paralyzed", 0, yellow)
+    screen.blit(player_paralyze, ((font.get_height() * 2), screen.get_rect().centery))
   if display_welcome == True:
     screen.blit(welcome, welcomepos)
     screen.blit(beta, betapos)
