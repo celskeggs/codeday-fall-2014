@@ -67,7 +67,7 @@ while 1:
     screen.blit(countdown, (size[0] - countdown.get_width(), (background.get_rect().centery - font.get_height() *4)))
 
   for i in range(0, 4):
-    if interpreter.client.dictionary["connected." + str(i)]:
+    if interpreter.client.dictionary.get("connected." + str(i), False):
       player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "None") + ": " +
                                 interpreter.client.dictionary.get("class." + str(i), "No Class Picked")
                                 , 0, color[i])
