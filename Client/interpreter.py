@@ -12,6 +12,8 @@ def send(line):
   print line
   lines.append(line)
   words = line.split()
+  was_byp = False
+  was_found = False
   for class_name, class_commands in commands.items():
     if words[0].lower() in class_commands:
       if len(words) < 2:
@@ -20,9 +22,14 @@ def send(line):
           client.send("attack", (words[0], words[1]))
 
       else:
-          lines.append("Your class cannot use that command")
+        was_byp = True
+        continue
+
+      was_found = True
       return
-  if words[0].lower() == "hello":
+  if was_byp and not was_found:
+    lines.append("Your class cannot use that command")
+  elif words[0].lower() == "hello":
     client.send("hello", 20)
   elif words[0].lower() == "enter":
     client.send("enter", None)
