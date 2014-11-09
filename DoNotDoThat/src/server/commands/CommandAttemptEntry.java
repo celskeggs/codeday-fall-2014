@@ -10,6 +10,10 @@ public class CommandAttemptEntry extends Command {
 	
 	@Override
 	public void process(GameContext context) {
-		context.storage.put("isready." + client.clientId, true);
+		if (client.getName() == null) {
+			client.receivedChatMessage("You have not yet set your name!");
+		} else {
+			context.storage.put("isready." + client.clientId, true);
+		}
 	}
 }

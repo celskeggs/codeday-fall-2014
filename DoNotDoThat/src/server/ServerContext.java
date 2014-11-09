@@ -12,7 +12,7 @@ import server.netio.PacketOutputStream;
 public class ServerContext {
 
 	private final BlockingQueue<Command> commands = new LinkedBlockingQueue<>();
-	private final GameContext context = new GameContext();
+	public final GameContext context = new GameContext();
 	private final ClientContext[] clients = new ClientContext[4];
 
 	public ClientContext getClientContext(

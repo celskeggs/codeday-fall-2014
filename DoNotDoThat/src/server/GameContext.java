@@ -50,7 +50,10 @@ public class GameContext {
 		for (int i = 0; i < players.length; i++) {
 			CombatantContext target = (CombatantContext) storage.get("target."
 					+ i);
-			storage.put("attack." + i, null);
+			String command = (String) storage.get("attack." + i);
+			if (target != null && command != null) {
+				target.setHealth(target.getHealth() - commandDamage.get(storage.get("class." + i) + "." + command));
+			}
 		}
 		for (int i = 0; i < players.length; i++) {
 			storage.put("attack." + i, null);
@@ -63,7 +66,7 @@ public class GameContext {
 		}
 		ClientContext[] plys = user.serverContext.listPlayers();
 		for (int i=0; i<plys.length; i++) {
-			if (name.equals(plys[i].name)) {
+			if (name.equals(plys[i].getName()) || name.equals("#" + i)) {
 				return plys[i];
 			}
 		}
@@ -75,6 +78,7 @@ public class GameContext {
 	}
 
 	private static final HashMap<String, List<String>> commands = new HashMap<>();
+	private static final HashMap<String, Integer> commandDamage = new HashMap<>();
 
 	static {
 		commands.put("wizard",
@@ -85,6 +89,18 @@ public class GameContext {
 				Arrays.asList("draw", "shank", "slash", "throw", "kick"));
 		commands.put("robot", Arrays.asList("pew", "pewpew", "pewpewpew",
 				"pewpewpewpew", "pow"));
+		for (String cmd : new String[] {"wizard.zap", "soldier.stun", "ranger.kick", "robot.burn"}) { // NONE
+			commandDamage.put(cmd, 0);
+		}
+		for (String cmd : new String[] {"wizard.blast", "soldier.punch", "ranger.slash", "robot.inhale"}) { // LOW
+			commandDamage.put(cmd, 1);
+		}
+		for (String cmd : new String[] {"wizard.burn", "soldier.shoot", "ranger.draw", "ranger.throw", "robot.pew"}) { // MEDIUM
+			commandDamage.put(cmd, 2);
+		}
+		for (String cmd : new String[] {"wizard.grind", "wizard.drown", "soldier.bombard", "soldier.kick", "ranger.shank", "robot.pewpew", "robot.cook"}) { // HIGH
+			commandDamage.put(cmd, 3);
+		}
 	}
 
 	public void queueAttack(ClientContext client, String cmdname, String who) {
@@ -98,6 +114,8 @@ public class GameContext {
 		CombatantContext out = getCombatant(client, who);
 		if (out != null) {
 			storage.put("target." + client.clientId, out);
+		} else {
+			client.receivedChatMessage("I don't know who you mean!");
 		}
 	}
 

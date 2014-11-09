@@ -1,0 +1,20 @@
+package server.commands;
+
+import server.GameContext;
+
+public class CommandSetClass extends Command {
+	private final String name;
+
+	public CommandSetClass(Object obj) {
+		this.name = (String) obj;
+	}
+
+	@Override
+	public void process(GameContext context) {
+		if (client.getName() == null) {
+			client.setName(name);
+		} else {
+			client.receivedChatMessage("You already set your name!");
+		}
+	}
+}

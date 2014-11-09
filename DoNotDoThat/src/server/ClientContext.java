@@ -13,11 +13,10 @@ public class ClientContext extends CombatantContext {
 	public final int clientId;
 	private final PacketOutputStream packetOutputStream;
 	private final ClientHandlerThread handler;
-	public String name;
 
 	public ClientContext(ServerContext serverContext, int clientId,
 			PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
-		super(5);
+		super(serverContext.context, 5, "" + clientId);
 		this.serverContext = serverContext;
 		this.clientId = clientId;
 		this.packetOutputStream = packetOutputStream;
@@ -47,6 +46,7 @@ public class ClientContext extends CombatantContext {
 	}
 
 	public void receivedChatMessage(String string) {
+		Logger.info("Sending message " + string + " to client." + this.clientId);
 		Packet p = new Packet();
 		p.type = 0x0306;
 		p.data = string.getBytes();
@@ -56,5 +56,13 @@ public class ClientContext extends CombatantContext {
 			Logger.warning("Terminating client due to IO exception: " + this, ex);
 			this.terminate();
 		}
+	}
+
+	public String getName() {
+		return (String) serverContext.context.storage.get("name." + clientId);
+	}
+
+	public void setName(String name) {
+		serverContext.context.storage.put("name." + clientId, name);
 	}
 }
