@@ -34,7 +34,7 @@ public class KeyValueStore {
 		if (Objects.equals(data.get(key), value)) {
 			return;
 		}
-		Logger.finer("Put " + key + " = " + value);
+		//Logger.finer("Put " + key + " = " + value);
 		dirty.add(key);
 		data.put(key, value);
 	}
@@ -43,7 +43,7 @@ public class KeyValueStore {
 			throws IOException {
 		ByteBuffer enc = ByteBuffer.allocate(4096);
 		for (String dirtykey : dirty) {
-			Logger.finer("Sending key " + dirtykey);
+			//Logger.finer("Sending key " + dirtykey);
 			Packet out = new Packet();
 			enc.clear();
 			byte[] key;

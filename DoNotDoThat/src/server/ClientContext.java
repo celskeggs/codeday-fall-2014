@@ -13,10 +13,11 @@ public class ClientContext extends CombatantContext {
 	public final int clientId;
 	private final PacketOutputStream packetOutputStream;
 	private final ClientHandlerThread handler;
+	public static final int DEFAULT_PLAYER_HEALTH = 10;
 
 	public ClientContext(ServerContext serverContext, int clientId,
 			PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
-		super(serverContext.context, 5, "" + clientId);
+		super(serverContext.context, DEFAULT_PLAYER_HEALTH, "" + clientId);
 		this.serverContext = serverContext;
 		this.clientId = clientId;
 		this.packetOutputStream = packetOutputStream;
@@ -77,5 +78,12 @@ public class ClientContext extends CombatantContext {
 	@Override
 	public String getID() {
 		return "#" + clientId;
+	}
+
+	public void resetPlayer() {
+		serverContext.context.storage.remove("class." + clientId);
+		serverContext.context.storage.put("isready." + clientId, false);
+		setHealth(DEFAULT_PLAYER_HEALTH);
+		
 	}
 }

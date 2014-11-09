@@ -15,7 +15,7 @@ public abstract class CombatantContext {
 	}
 	
 	public boolean isDead() {
-		return getHealth() <= 0;
+		return (boolean) game.storage.get("isdead." + uid);
 	}
 
 	public void setHealth(int health) {

@@ -1,6 +1,9 @@
 # decode.py
-def decode4(x):
-	return (ord(x[0]) << 24) | (ord(x[1]) << 16) | (ord(x[2]) << 8) | (ord(x[3]))
+def decode4(x, signed=False):
+	out = (ord(x[0]) << 24) | (ord(x[1]) << 16) | (ord(x[2]) << 8) | (ord(x[3]))
+	if signed and out & 0x80000000:
+		out -= 0x100000000
+	return out
 def encode4(x):
 	return chr((x >> 24) & 0xFF) + chr((x >> 16) & 0xFF) + chr((x >> 8) & 0xFF) + chr(x & 0xFF)
 def decode_i(x):
@@ -39,7 +42,7 @@ def encode(x):
 	if x == None:
 		return "\x00"
 	elif type(x) == int:
-		return "\x01" + encode4(x)
+		return "\x01" + encode4(x & 0xFFFFFFFF)
 	elif type(x) == bool:
 		return "\x02\x01" if x else "\x02\x00"
 	elif type(x) == tuple:

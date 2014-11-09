@@ -13,7 +13,8 @@ public class CommandClientJoin extends Command {
 	@Override
 	public void process(GameContext context) {
 		context.storage.put("isready." + client.clientId, false);
-		context.storage.put("class." + client.clientId, null);
+		context.storage.remove("name." + client.clientId);
+		context.storage.remove("class." + client.clientId);
 		context.storage.setAllDirty();
 	}
 }

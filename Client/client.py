@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import socket, threading, decode, Queue
+import socket, threading, decode, Queue, hashlib
 
 s = socket.socket()
 host = ("10.251.14.147")
@@ -39,7 +39,8 @@ def threadbody():
         typeid = parse2(header[4:6])
         data = getall(length)
         if typeid == 0x0102:
-            del dictionary[data]
+			if data in dictionary:
+				del dictionary[data]
         elif typeid == 0x0204:
             namelen = ord(data[0])
             key = data[1:namelen+1]
@@ -70,6 +71,17 @@ def sendraw(typeid,data):
     s.send(encode4(length) + encode2(typeid) + data)
 def send(cmd, data):
     sendraw(commands.index(cmd), decode.encode(data))
+digest = hashlib.sha512()
+def dohash(name):
+	with open(name) as f1:
+		while True:
+			x = f1.read()
+			if x == "": break
+			digest.update(x)
+dohash("interpreter.py")
+dohash("main.py")
+dohash("client.py")
+send("hello", digest.hexdigest())
 
 def close():
     s.close()

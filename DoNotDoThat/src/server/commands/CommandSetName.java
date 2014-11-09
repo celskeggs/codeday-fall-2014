@@ -11,7 +11,9 @@ public class CommandSetName extends Command {
 
 	@Override
 	public void process(GameContext context) {
-		if (client.getName() == null) {
+		if (name.length() >= 15) {
+			client.receivedChatMessage("That's a terribly long name. Choose a shorter name.");
+		} else if (client.getName() == null) {
 			client.setName(name);
 			client.receivedChatMessage("Hello, " + name + "!");
 		} else {

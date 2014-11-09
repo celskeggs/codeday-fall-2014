@@ -52,6 +52,9 @@ public class GameContext {
 				if (storage.get("attack." + i) != null) {
 					needed++;
 				}
+				if (players[i] != null) {
+					storage.put("isdead." + i, players[i].getHealth() <= 0);
+				}
 			}
 			storage.put("attack.total", needed);
 			if (needed == count || countdown <= 0) { // TURN OVER
@@ -59,6 +62,7 @@ public class GameContext {
 			} else {
 				storage.put("mode.countdown", countdown - 1);
 			}
+			checkWin(serverContext, players);
 		}
 	}
 
@@ -102,6 +106,36 @@ public class GameContext {
 			storage.put("attack." + i, null);
 		}
 		storage.put("mode.countdown", turnlen);
+	}
+
+	public void checkWin(ServerContext server, ClientContext[] players) {
+		int alive = 0;
+		ClientContext winner = null;
+		for (int i = 0; i < players.length; i++) {
+			if (players[i] != null && !players[i].isDead()) {
+				alive++;
+				winner = players[i];
+			}
+		}
+		if (alive == 1) {
+			this.sendMessage(server,
+					"[SUPREME SERVER MONKEY] " + winner.getName() + " has won! Resetting server.");
+		} else if (alive == 0) {
+			this.sendMessage(server,
+					"[SUPREME SERVER MONKEY] Everyone is DEAD! Resetting server.");
+		} else {
+			return;
+		}
+		resetRound(players);
+	}
+	
+	public void resetRound(ClientContext[] players) {
+		storage.put("mode.isinlobby", true);
+		for (ClientContext ply : players) {
+			if (ply != null) {
+				ply.resetPlayer();
+			}
+		}
 	}
 
 	private CombatantContext getCombatant(ClientContext user, String name) {
