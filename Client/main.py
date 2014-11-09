@@ -94,13 +94,13 @@ while 1:
 
   if client.my("status.bleed", 0) > 0:
     player_bleed = font.render("You are now bleeding", 0, red)
-    screen.blit(player_bleed, (0, screen.get_rect().centery))
-  elif client.my("status.burn", 0) > 0:
+    screen.blit(player_bleed, ((screen.get_rect().centerx - (player_bleed.get_width()/2), 5)))
+  if client.my("status.burn", 0) > 0:
     player_burn = font.render("You have been burnt", 0, orange)
-    screen.blit(player_burn, (font.get_height(), screen.get_rect().centery))
-  elif client.my("status.paralyze", 0) > 0:
+    screen.blit(player_burn, ((screen.get_rect().centerx - (player_burn.get_width()/2)), (font.get_height() + 5)))
+  if client.my("status.paralyze", 0) > 0:
     player_paralyze = font.render("You have been paralyzed", 0, yellow)
-    screen.blit(player_paralyze, ((font.get_height() * 2), screen.get_rect().centery))
+    screen.blit(player_paralyze, ((screen.get_rect().centerx - player_paralyze.get_width()/2), (font.get_height() * 2) + 5))
   if display_welcome == True:
     screen.blit(welcome, welcomepos)
     screen.blit(beta, betapos)
