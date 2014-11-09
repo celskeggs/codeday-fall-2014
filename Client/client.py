@@ -44,15 +44,15 @@ def threadbody():
             key = data[1:namelen+1]
             body = data[namelen+1:]
             dictionary[key] = decode.decode(body)
-		elif typeid == 0x0306:
-			chatlines.put(data)
+        elif typeid == 0x0306:
+            chatlines.put(data)
         else:
             raise Exception("unhandled data command: %d" % typeid)
 def nextline():
-	try:
-		return chatlines.get_nowait()
-	except Queue.Empty:
-		return None
+    try:
+        return chatlines.get_nowait()
+    except Queue.Empty:
+        return None
 thread = threading.Thread(target=threadbody)
 thread.start()
 
