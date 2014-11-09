@@ -20,6 +20,7 @@ public abstract class Command {
 	static {
 		classes.add(CommandHelloWorld.class);
 		classes.add(CommandAttemptEntry.class);
+		classes.add(CommandAttack.class);
 	}
 
 	public static Command parse(ClientContext clientContext, Packet packet) {

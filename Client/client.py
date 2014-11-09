@@ -48,7 +48,7 @@ def threadbody():
 thread = threading.Thread(target=threadbody)
 thread.start()
 
-commands = ["hello", "enter"]
+commands = ["hello", "enter", "attack"]
 
 def sendraw(typeid,data):
     length = len(data)

@@ -14,6 +14,19 @@ def decode_i(x):
 	elif fb == 2:
 		assert len(x) >= 2, "bad length"
 		return ord(x[1]) != 0x00, x[2:]
+	elif fb == 3:
+		ln, x = decode_i(x[1:])
+		out = []
+		for i in range(ln):
+			elem, x = decode_i(x)
+			out.append(elem)
+		return out, x
+	elif fb == 4:
+		assert len(x) >= 5, "bad length"
+		count = decode4(x[1:5])
+		x = x[5:]
+		assert len(x) >= count
+		return x[:count], x[count:]
 	else:
 		raise Exception("unrecognized typeid: %d" % fb)
 def decode(x):
@@ -27,5 +40,9 @@ def encode(x):
 		return "\x01" + encode4(x)
 	elif type(x) == bool:
 		return "\x02\x01" if x else "\x02\x00"
+	elif type(x) == tuple:
+		return "\x03" + encode(len(x)) + "".join(map(encode, x))
+	elif type(x) == str:
+		return "\x04" + encode4(len(x)) + x
 	else:
 		raise Exception("unhandled type: %s" % type(x))
