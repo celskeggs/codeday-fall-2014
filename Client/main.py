@@ -32,6 +32,8 @@ while 1:
 
   status_health = font.render("Health: " + str(client.my("health")), 0, red)
 
+  countdown = font.render("Time Left in Battle: " + str(interpreter.client.dictionary.get("mode.countdown", 0)/100), 0, red)
+
   is_in_lobby = client.dictionary.get("mode.isinlobby", True)
   receive_line = interpreter.client.nextline()
   if receive_line != None:
@@ -65,6 +67,7 @@ while 1:
     screen.blit(status_not, (size[0] - status_not.get_width(), 0))
     screen.blit(status_health, (size[0] - status_health.get_width(),
                                 (background.get_rect().centery - font.get_height() * 2)))
+    screen.blit(countdown, (size[0] - countdown.get_width(), (background.get_rect().centery - font.get_height() *3)))
 
   for i in range(0, 4):
     if interpreter.client.dictionary["connected." + str(i)]:
