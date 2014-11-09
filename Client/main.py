@@ -6,6 +6,7 @@ screen = pygame.display.set_mode(size)
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 green = (0, 255, 0)
+red = (255, 0, 0)
 
 display_welcome = True
 
@@ -15,6 +16,7 @@ background.fill((0, 0, 0))
 
 font = pygame.font.SysFont('monospace', 18)
 welcome = font.render("Welcome to this Text-based Game", 0, green)
+
 textpos = welcome.get_rect()
 textpos.centerx = background.get_rect().centerx
 textpos.centery = background.get_rect().centery
@@ -23,11 +25,12 @@ status_lobby = font.render("Lobby", 0, green)
 status_not = font.render("BATTLE", 0, green)
 
 
-
 text_input = ""
 y = 420
 
 while 1:
+
+  status_health = font.render(str(client.my("health")), 0, red)
 
   is_in_lobby = client.dictionary.get("mode.isinlobby", True)
   receive_line = interpreter.client.nextline()
@@ -45,13 +48,18 @@ while 1:
       else:
         text_input = text_input + event.unicode
     if event.type == pygame.QUIT: sys.exit()
+
   text = font.render(text_input, 0, green)
   screen.blit(background, (0, 0))
   screen.blit(text, (5, 480 - font.get_height()))
+  screen.blit(status_health)
+
   if is_in_lobby == True:
     screen.blit(status_lobby, (640 - status_lobby.get_width(), 0))
+    screen.blit(status_health, (640 - status_health.get_width(), (centery - font.get_height() * 2)))
   elif is_in_lobby == False:
     screen.blit(status_not, (640 - status_not.get_width(), 0))
+
   if display_welcome == True:
     screen.blit(welcome, textpos)
 
@@ -62,24 +70,6 @@ while 1:
 
 
   pygame.display.flip()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
