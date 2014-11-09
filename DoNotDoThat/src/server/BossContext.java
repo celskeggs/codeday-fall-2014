@@ -15,6 +15,10 @@ public class BossContext extends CombatantContext {
 		game.storage.put("class.boss", "boss");
 	}
 
+	public void scaleHealth(int plyCount) {
+		setHealth((int) (5 + 2.5 * plyCount));
+	}
+
 	@Override
 	public String getID() {
 		return "boss";

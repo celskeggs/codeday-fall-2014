@@ -1,4 +1,4 @@
-import client
+import client, sys
 lines = []
 commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "inhale", "cook", "burn"]}
 
@@ -48,19 +48,19 @@ def send(line):
     for command in commands[client.my("class")]:
       lines.append(command)
   elif words[0].lower() == "help":
-    lines.append("------------------------------")
-    lines.append("Choose your name")
-    lines.append("Type 'name' then your choice of name")
-    lines.append("Choose your class")
-    lines.append("You may pick between a Wizard, Ranger, Soldier, and Robot")
-    lines.append("Choose by typing 'class' then your choice")
-    lines.append("Try to be the last man standing")
-    lines.append("Use your moves to injure your enemies")
-    lines.append("See your list of moves by typing 'commands'")
-    lines.append("To attack, type your move and the specified target, either 'boss' or a player's name")
-    lines.append("To chat, type 'say' then your message")
-    lines.append("Start the game by typing 'enter'")
-    lines.append("Have fun")
-    lines.append("------------------------------")
+    lines.append("BLUE~------------------------------")
+    lines.append("BLUE~Choose your name")
+    lines.append("BLUE~Type '~GREEN~name~BLUE~' then your choice of name")
+    lines.append("BLUE~Choose your class")
+    lines.append("BLUE~You may pick between a Wizard, Ranger, Soldier, and Robot")
+    lines.append("BLUE~Choose by typing '~GREEN~class~BLUE~' then your choice")
+    lines.append("BLUE~Try to be the last man standing")
+    lines.append("BLUE~Use your moves to injure your enemies")
+    lines.append("BLUE~See your list of moves by typing '~GREEN~commands~BLUE~'")
+    lines.append("BLUE~To attack, type your move and the specified target, either '~GREEN~boss~BLUE~' or a player's name")
+    lines.append("BLUE~To chat, type '~GREEN~say~BLUE~' then your message")
+    lines.append("BLUE~Start the game by typing '~GREEN~enter~BLUE~'")
+    lines.append("BLUE~Have fun")
+    lines.append("BLUE~------------------------------")
   else:
     lines.append("------Unrecognizable Command------")

@@ -44,6 +44,7 @@ public class GameContext {
 				for (int i = 0; i < players.length; i++) {
 					storage.put("attack." + i, null);
 				}
+				boss.scaleHealth(count);
 				sendMessage(serverContext, "[SUPREME SERVER MONKEY] Begin!");
 			}
 		} else {

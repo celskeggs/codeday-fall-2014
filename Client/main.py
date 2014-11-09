@@ -16,6 +16,7 @@ blue = (0, 0, 255)
 white = (255, 255, 255)
 yellow = (255, 255, 0)
 orange = (255, 127, 0)
+purple = (255, 0, 255)
 color = [green, red, blue, white, yellow]
 
 display_welcome = True
@@ -39,14 +40,26 @@ instructionspos.centery = screen.get_rect().centery + font.get_height() + font.g
 
 font = pygame.font.SysFont('monospace', 16)
 
-status_lobby = font.render("LOBBY", 0, green)
-status_not = font.render("BATTLE", 0, green)
-
 text_input = ""
 
-while 1:
-  countdown = font.render("Time Left in Battle: " + str(interpreter.client.dictionary.get("mode.countdown", 0)/100), 0, red)
+color_lookup = {"RED": red, "GREEN": green, "BLUE": blue, "WHITE": white, "YELLOW": yellow, "ORANGE": orange, "PURPLE": purple}
+LEFT, CENTER, RIGHT = -1, 0, 1
+def draw_colorable_text(text, color, x, y, align=CENTER):
+    parts = str(text).split("~")
+    rparts = [part for part in parts if part not in color_lookup]
+    if align == CENTER:
+        x -= font.size("".join(rparts))[0] / 2
+    elif align == RIGHT:
+        x -= font.size("".join(rparts))[0]
+    for part in parts:
+        if part in color_lookup:
+            color = color_lookup[part]
+        else:
+            comp = font.render(part, 0, color)
+            screen.blit(comp, (x, y))
+            x += comp.get_width()
 
+while 1:
   is_in_lobby = client.dictionary.get("mode.isinlobby", True)
   receive_line = interpreter.client.nextline()
   if receive_line != None:
@@ -70,27 +83,20 @@ while 1:
       interpreter.client.close()
       sys.exit()
 
-  text = font.render("> " + text_input, 0, green)
   screen.blit(backgroundDead if not is_in_lobby and interpreter.client.my("isdead", False) else backgroundAlive, (0, 0))
-  screen.blit(text, (5, size[1] - font.get_height()))
+  draw_colorable_text("> " + text_input, green, 5, size[1] - font.get_height(), LEFT)
 
   if is_in_lobby:
-    screen.blit(status_lobby, (size[0] - status_lobby.get_width() - 10, 0))
+    draw_colorable_text("LOBBY", green, size[0] - 10, 0, RIGHT)
   else:
-    screen.blit(status_not, (size[0] - status_not.get_width() - 10, 0))
-    screen.blit(countdown, (size[0] - countdown.get_width() - 10, (screen.get_rect().centery + font.get_height() * 4)))
+    draw_colorable_text("BATTLE", green, size[0] - 10, 0, RIGHT)
+    draw_colorable_text("Time Left in Battle: " + str(interpreter.client.dictionary.get("mode.countdown", 0)/100), red, size[0] - 10, screen.get_rect().centery + font.get_height() * 4, RIGHT)
 
   for i in [0, 1, 2, 3, 4]:
     n = "boss" if i == 4 else str(i)
     if i != 4:
-      player_level = font.render("Level: " + str(interpreter.client.dictionary.get
-                               ("level." + interpreter.client.dictionary.get("ip." + str(i), ""), 1)), 0, color[i])
-      screen.blit(player_level, (size[0] - player_level.get_width() - 10,
-                                 (screen.get_rect().centery - font.get_height() * ((i * 3) - 3))))
+      draw_colorable_text("Level: " + str(interpreter.client.dictionary.get("level." + interpreter.client.dictionary.get("ip." + str(i), ""), 1)), color[i], size[0] - 10, screen.get_rect().centery - font.get_height() * ((i * 3) - 3), RIGHT)
     if interpreter.client.dictionary.get("connected." + n, False) or n == "boss":
-      player_list = font.render(interpreter.client.dictionary.get("name." + n, "none") + ": " +
-                                interpreter.client.dictionary.get("class." + n, "no class picked")
-                                , 0, color[i])
       health = interpreter.client.dictionary.get("health." + n, None)
       if health == None:
         health = "???"
@@ -106,33 +112,19 @@ while 1:
         health += " [PARALYZED]"
       if interpreter.client.dictionary.get("isready." + n, False) and interpreter.client.dictionary["mode.isinlobby"]:
         health += " [READY]"
-      player_health = font.render("Health: " + str(health), 0, color[i])
-      screen.blit(player_list, (size[0] - player_list.get_width() - 10,
-                                 (screen.get_rect().centery - (font.get_height() * ((i * 3) - 1)))))
-      screen.blit(player_health, (size[0] - player_health.get_width() - 10,
-                                 (screen.get_rect().centery - font.get_height() * ((i * 3) - 2))))
-
+      draw_colorable_text(interpreter.client.dictionary.get("name." + n, "none") + ": " + interpreter.client.dictionary.get("class." + n, "no class picked"), color[i], size[0] - 10, screen.get_rect().centery - (font.get_height() * ((i * 3) - 1)), RIGHT)
+      draw_colorable_text("Health: " + str(health), color[i], size[0] - 10, screen.get_rect().centery - font.get_height() * ((i * 3) - 2), RIGHT)
 
   if client.my("status.bleed", 0) > 0:
-    player_bleed = font.render("you are now bleeding".upper(), 0, red)
-    screen.blit(player_bleed, ((screen.get_rect().centerx - (player_bleed.get_width()/2), 5)))
+    draw_colorable_text("YOU ARE NOW BLEEDING", red, screen.get_rect().centerx, 5, CENTER)
   if client.my("status.burn", 0) > 0:
-    player_burn = font.render("you have been burnt".upper(), 0, orange)
-    screen.blit(player_burn, ((screen.get_rect().centerx - (player_burn.get_width()/2)), (font.get_height() + 5)))
+    draw_colorable_text("YOU HAVE BEEN BURNT", orange, screen.get_rect().centerx, (font.get_height()) + 5, CENTER)
   if client.my("status.paralyze", 0) > 0:
-    player_paralyze = font.render("you have been paralyzed".upper(), 0, yellow)
-    screen.blit(player_paralyze, ((screen.get_rect().centerx - player_paralyze.get_width()/2), (font.get_height() * 2) + 5))
+    draw_colorable_text("YOU HAVE BEEN PARALYZED", yellow, screen.get_rect().centerx, (font.get_height() * 2) + 5, CENTER)
   if display_welcome == True:
     screen.blit(welcome, welcomepos)
     screen.blit(beta, betapos)
     screen.blit(instructions, instructionspos)
   for i, line in enumerate(interpreter.lines, 1):
-    new_line = font.render(line, 0, green)
-    screen.blit(new_line, (5, (size[1] - font.get_height()) -
-                           (font.get_height() * (len(interpreter.lines) - i)) - font.get_height()))
-
-
+    draw_colorable_text(line, green, 5, (size[1] - font.get_height()) - (font.get_height() * (len(interpreter.lines) - i)) - font.get_height(), LEFT)
   pygame.display.flip()
-
-
-
