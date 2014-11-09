@@ -13,6 +13,10 @@ public abstract class CombatantContext {
 	public int getHealth() {
 		return (int) game.storage.get("health." + uid);
 	}
+	
+	public boolean isDead() {
+		return getHealth() <= 0;
+	}
 
 	public void setHealth(int health) {
 		game.storage.put("health." + uid, health);
