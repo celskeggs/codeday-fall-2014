@@ -2,6 +2,7 @@ package server.commands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import server.ClientContext;
 import server.GameContext;
@@ -11,19 +12,28 @@ import server.netio.Packet;
 
 public abstract class Command {
 
+	public ClientContext client;
+
 	@SuppressWarnings("unchecked")
-	private static final Class<? extends Command>[] classes = (Class<? extends Command>[]) new Class<?>[] {CommandHelloWorld.class };
+	private static final ArrayList<Class<? extends Command>> classes = new ArrayList<>();
+
+	static {
+		classes.add(CommandHelloWorld.class);
+		classes.add(CommandAttemptEntry.class);
+	}
 
 	public static Command parse(ClientContext clientContext, Packet packet) {
-		if (packet.type < 0 || packet.type >= classes.length) {
+		if (packet.type < 0 || packet.type >= classes.size()) {
 			Logger.severe("Unrecognized packet ID: " + packet.type);
 			return null;
 		}
 		ByteBuffer buf = ByteBuffer.wrap(packet.data);
 		try {
 			Object object = Encoder.decode(buf);
-			return (Command) classes[packet.type].getConstructor(Object.class)
-					.newInstance(object);
+			Command cmd = (Command) classes.get(packet.type)
+					.getConstructor(Object.class).newInstance(object);
+			cmd.client = clientContext;
+			return cmd;
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

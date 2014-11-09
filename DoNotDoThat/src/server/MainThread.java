@@ -22,6 +22,7 @@ public class MainThread extends Thread {
 	public void run() {
 		long lastCycle = System.currentTimeMillis();
 		long lastOverloadedMessage = 0;
+		context.initGame();
 		while (true) {
 			context.processCommands();
 			context.processGame();

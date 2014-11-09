@@ -11,7 +11,6 @@ public class CommandHelloWorld extends Command {
 
 	@Override
 	public void process(GameContext context) {
-		System.out.println("Set value: " + value);
 		context.storage.put("hello", value);
 	}
 }

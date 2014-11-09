@@ -9,7 +9,7 @@ import server.netio.PacketOutputStream;
 public class ClientContext {
 
 	private final ServerContext serverContext;
-	private final int clientId;
+	public final int clientId;
 	private final PacketOutputStream packetOutputStream;
 	private final ClientHandlerThread handler;
 
@@ -19,6 +19,10 @@ public class ClientContext {
 		this.clientId = clientId;
 		this.packetOutputStream = packetOutputStream;
 		this.handler = handler;
+	}
+	
+	public boolean isValid() {
+		return clientId >= 0 && serverContext.getClient(clientId) == this;
 	}
 
 	public void terminated() {

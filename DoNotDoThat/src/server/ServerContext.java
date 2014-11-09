@@ -1,5 +1,6 @@
 package server;
 
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -13,11 +14,11 @@ public class ServerContext {
 	private final BlockingQueue<Command> commands = new LinkedBlockingQueue<>();
 	private final GameContext context = new GameContext();
 	private final ClientContext[] clients = new ClientContext[4];
-	private boolean isInLobby = true;
 
 	public ClientContext getClientContext(
 			PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
-		if (isInLobby) {
+		Boolean b = (Boolean) context.storage.get("mode.isinlobby");
+		if (b != null && b) {
 			synchronized (clients) {
 				for (int i = 0; i < clients.length; i++) {
 					if (clients[i] == null) {
@@ -37,7 +38,7 @@ public class ServerContext {
 	}
 
 	public void processGame() {
-		// TODO Auto-generated method stub
+		context.processGame(this);
 	}
 
 	public void updateClients() {
@@ -61,5 +62,21 @@ public class ServerContext {
 				}
 			}
 		}
+	}
+
+	public ClientContext getClient(int clientId) {
+		return clients[clientId];
+	}
+
+	public boolean[] listPlayers() {
+		boolean[] out = new boolean[clients.length];
+		for (int i=0; i<out.length; i++) {
+			out[i] = clients[i] != null;
+		}
+		return out;
+	}
+
+	public void initGame() {
+		context.initGame();
 	}
 }

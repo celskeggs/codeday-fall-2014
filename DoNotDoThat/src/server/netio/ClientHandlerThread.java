@@ -6,6 +6,7 @@ import java.net.Socket;
 import server.ClientContext;
 import server.ServerContext;
 import server.commands.Command;
+import server.commands.CommandClientJoin;
 import server.logger.Logger;
 
 public class ClientHandlerThread extends Thread {
@@ -27,6 +28,7 @@ public class ClientHandlerThread extends Thread {
 			clientContext = serverContext.getClientContext(
 					new PacketOutputStream(client.getOutputStream()), this);
 			input = new PacketInputStream(client.getInputStream());
+			serverContext.addCommandToQueue(new CommandClientJoin(clientContext));
 			while (!end && !Thread.interrupted()) {
 				Command command = Command.parse(clientContext, input.read());
 				if (command != null) {

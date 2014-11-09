@@ -16,6 +16,10 @@ public class Encoder {
 			enc.put((byte) 0x01);
 			enc.putInt((Integer) object); 
 			break;
+		case "java.lang.Boolean":
+			enc.put((byte) 0x02);
+			enc.put((byte) (((Boolean) object).booleanValue() ? 1 : 0));
+			break;
 		default:
 			enc.put((byte) 0x00);
 			Logger.severe("Unhandlable object type: " + object.getClass());
@@ -30,6 +34,8 @@ public class Encoder {
 			return null;
 		case 0x01:
 			return (Integer) buf.getInt();
+		case 0x02:
+			return buf.get() != 0;
 		default:
 			Logger.severe("Unhandlable typeid: " + id);
 			return null;
