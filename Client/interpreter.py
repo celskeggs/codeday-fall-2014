@@ -50,6 +50,8 @@ def send(line):
     else:
       classname = words[1]
       client.send("class", classname)
+  elif words[0].lower() == "exit":
+    sys.exit()
 
   elif client.my("class") != None:
     if words[0].lower() == "commands":
