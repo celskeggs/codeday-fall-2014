@@ -5,14 +5,24 @@ import java.util.Random;
 public class BossContext extends CombatantContext {
 
 	private static final int DEFAULT_BOSS_HEALTH = 15;
-	private static final String DEFAULT_BOSS_NAME = "dragon";
 	private final Random random = new Random();
-	private static final String[] attacks = new String[] { "burn", "slam", "swipe" };
+	private String[] attacks;
+	private String name;
 
 	public BossContext(GameContext game) {
 		super(game, DEFAULT_BOSS_HEALTH, "boss");
-		game.storage.put("name.boss", DEFAULT_BOSS_NAME);
+		generateBoss();
 		game.storage.put("class.boss", "boss");
+	}
+
+	private void generateBoss() {
+		switch (random.nextInt(4)) {
+		case 0: name = "dragon"; attacks = new String[] { "burn", "slam", "swipe" }; break;
+		case 1: name = "remo williams"; attacks = new String[] { "smash", "crush", "stomp" }; break;
+		case 2: name = "paladin"; attacks = new String[] { "bash", "sweep", "impale" }; break;
+		case 3: name = "duck"; attacks = new String[] { "quack", "swim", "eat" }; break;
+		}
+		game.storage.put("name.boss", name);
 	}
 
 	public void scaleHealth(int plyCount) {
@@ -26,12 +36,13 @@ public class BossContext extends CombatantContext {
 
 	@Override
 	public String getName() {
-		return DEFAULT_BOSS_NAME;
+		return name;
 	}
 
 	@Override
 	public void resetCombatant() {
 		resetStatusAndHealth(DEFAULT_BOSS_HEALTH);
+		generateBoss();
 	}
 
 	@Override

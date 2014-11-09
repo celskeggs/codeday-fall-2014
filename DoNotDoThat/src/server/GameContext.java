@@ -98,7 +98,7 @@ public class GameContext {
 		String targetname = player.getTargetName(players);
 		CombatantContext target = targetname == null ? null : getCombatant(players, player, targetname);
 		String command = player.getAttackType();
-		if (target != null && command != null) {
+		if (target != null && command != null && !command.equals("wait")) {
 			if (player.isDead()) {
 				this.sendMessage(server, "[SUPREME SERVER MONKEY] " + player.getName() + " tried to attack " + target.getName() + ", but is dead!");
 			} else if (player.wasParalyzed()) {
@@ -195,7 +195,7 @@ public class GameContext {
 		commands.put("soldier", Arrays.asList("shoot", "bombard", "punch", "kick", "stun"));
 		commands.put("ranger", Arrays.asList("draw", "shank", "slash", "throw", "kick"));
 		commands.put("robot", Arrays.asList("pew", "pewpew", "inhale", "cook", "burn"));
-		commands.put("boss", Arrays.asList("burn", "slam", "swipe"));
+		commands.put("boss", Arrays.asList("burn", "slam", "swipe", "smash", "crush", "stomp", "bash", "sweep", "impale", "quack", "swim", "eat"));
 		/*
 		 * for (String cmd : new String[] {"wizard.grind", "wizard.drown",
 		 * "wizard.zap", "soldier.bombard", "soldier.kick", "soldier.stun",
@@ -209,16 +209,16 @@ public class GameContext {
 			commandDamage.put(cmd, 0);
 			maxUses.put(cmd, 2);
 		}
-		for (String cmd : new String[] { "wizard.blast", "soldier.punch", "ranger.slash", "robot.inhale", "boss.swipe" }) { // LOW
+		for (String cmd : new String[] { "wizard.blast", "soldier.punch", "ranger.slash", "robot.inhale", "boss.swipe", "boss.stomp", "boss.sweep", "boss.swim" }) { // LOW
 			commandDamage.put(cmd, 1);
 			maxUses.put(cmd, 5);
 		}
-		for (String cmd : new String[] { "wizard.burn", "soldier.shoot", "ranger.draw", "ranger.throw", "robot.pew", "boss.burn" }) { // MEDIUM
+		for (String cmd : new String[] { "wizard.burn", "soldier.shoot", "ranger.draw", "ranger.throw", "robot.pew", "boss.burn", "boss.smash", "boss.bash", "boss.quack" }) { // MEDIUM
 			commandDamage.put(cmd, 2);
 			maxUses.put(cmd, 3);
 		}
 		for (String cmd : new String[] { "wizard.grind", "wizard.drown", "soldier.bombard", "soldier.kick", "ranger.shank", "robot.pewpew", "robot.cook",
-				"boss.slam" }) { // HIGH
+				"boss.slam", "boss.crush", "boss.impale", "boss.eat" }) { // HIGH
 			commandDamage.put(cmd, 3);
 			maxUses.put(cmd, 1);
 		}
@@ -244,6 +244,7 @@ public class GameContext {
 			}
 			break;
 		case "wizard.grind":
+		case "boss.crush":
 			if (prob(1)) {
 				sendMessage(server, attacker.getName() + " INSTAKILLS " + target.getName() + "!");
 				return true;
@@ -312,6 +313,20 @@ public class GameContext {
 				return true;
 			}
 			break;
+		case "boss.sweep":
+			if (prob(30)) {
+				sendMessage(server, attacker.getName() + " sweeps " + target.getName() + "!");
+				target.applyStatusEffect("paralyze", 1);
+				return true;
+			}
+			break;
+		case "boss.eat":
+			if (prob(20)) {
+				sendMessage(server, attacker.getName() + " bites " + target.getName() + "!");
+				target.applyStatusEffect("bleed", 3);
+				return true;
+			}
+			break;
 		}
 		return false;
 	}
@@ -323,7 +338,7 @@ public class GameContext {
 			Logger.severe("Invalid class: " + cls);
 			return;
 		}
-		if (!valid.contains(cmdname)) {
+		if (!valid.contains(cmdname) && !"wait".equals(cmdname)) {
 			Logger.info(cls + " cannot use attack " + cmdname);
 			client.receivedChatMessage("Your class cannot use that attack!");
 			return;
