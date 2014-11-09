@@ -13,12 +13,12 @@ color = [green, red, blue, white]
 
 display_welcome = True
 
-pygame.display.set_caption("Don't Do That.")
+pygame.display.set_caption('Do that and Die')
 
 background.fill((0, 0, 0))
 
 font = pygame.font.SysFont('monospace', 18)
-welcome = font.render("Don't Do That.", 0, green)
+welcome = font.render("Welcome to this Text-based Game", 0, green)
 
 textpos = welcome.get_rect()
 textpos.centerx = background.get_rect().centerx
@@ -64,7 +64,7 @@ while 1:
     screen.blit(status_lobby, (size[0] - status_lobby.get_width(), 0))
   elif is_in_lobby == False:
     screen.blit(status_not, (size[0] - status_not.get_width(), 0))
-    screen.blit(countdown, (size[0] - countdown.get_width(), (background.get_rect().centery - font.get_height() *3)))
+    screen.blit(countdown, (size[0] - countdown.get_width(), (background.get_rect().centery - font.get_height() *4)))
 
   for i in range(0, 4):
     if interpreter.client.dictionary["connected." + str(i)]:
