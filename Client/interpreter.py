@@ -43,7 +43,7 @@ def send(line):
     else:
       classname = words[1]
       client.send("class", classname)
-  elif words[0].lower() == "help":
+  elif words[0].lower() == "commands":
     for command in commands[client.my("class")]:
       lines.append(command)
   else:
