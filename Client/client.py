@@ -56,7 +56,7 @@ def nextline():
 thread = threading.Thread(target=threadbody)
 thread.start()
 
-commands = ["hello", "enter", "attack", "chat"]
+commands = ["hello", "enter", "attack", "chat", "name"]
 
 def sendraw(typeid,data):
     length = len(data)

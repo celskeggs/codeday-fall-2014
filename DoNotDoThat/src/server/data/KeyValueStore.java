@@ -69,7 +69,6 @@ public class KeyValueStore {
 			out.data = Arrays.copyOf(enc.array(), enc.position());
 			pout.write(out);
 		}
-		dirty.clear();
 	}
 
 	public synchronized void sendUpdatesAll(ClientContext[] clients) {
@@ -83,6 +82,13 @@ public class KeyValueStore {
 					client.terminate();
 				}
 			}
+		}
+		dirty.clear();
+	}
+
+	public void setAllDirty() {
+		for (String key : data.keySet()) {
+			dirty.add(key);
 		}
 	}
 }

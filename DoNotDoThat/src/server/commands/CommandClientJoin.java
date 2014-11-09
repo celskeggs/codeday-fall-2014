@@ -14,5 +14,6 @@ public class CommandClientJoin extends Command {
 	public void process(GameContext context) {
 		context.storage.put("isready." + client.clientId, false);
 		context.storage.put("class." + client.clientId, "wizard");
+		context.storage.setAllDirty();
 	}
 }

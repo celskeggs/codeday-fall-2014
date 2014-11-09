@@ -7,15 +7,17 @@ import server.netio.ClientHandlerThread;
 import server.netio.Packet;
 import server.netio.PacketOutputStream;
 
-public class ClientContext {
+public class ClientContext extends CombatantContext {
 
 	public final ServerContext serverContext;
 	public final int clientId;
 	private final PacketOutputStream packetOutputStream;
 	private final ClientHandlerThread handler;
+	public String name;
 
 	public ClientContext(ServerContext serverContext, int clientId,
 			PacketOutputStream packetOutputStream, ClientHandlerThread handler) {
+		super(5);
 		this.serverContext = serverContext;
 		this.clientId = clientId;
 		this.packetOutputStream = packetOutputStream;

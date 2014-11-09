@@ -22,6 +22,7 @@ public class ServerContext {
 			synchronized (clients) {
 				for (int i = 0; i < clients.length; i++) {
 					if (clients[i] == null) {
+						context.storage.setAllDirty();
 						return clients[i] = new ClientContext(this, i,
 								packetOutputStream, handler);
 					}

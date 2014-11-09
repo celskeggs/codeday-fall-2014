@@ -22,6 +22,7 @@ public abstract class Command {
 		classes.add(CommandAttemptEntry.class);
 		classes.add(CommandAttack.class);
 		classes.add(CommandChat.class);
+		classes.add(CommandSetName.class);
 	}
 
 	public static Command parse(ClientContext clientContext, Packet packet) {
