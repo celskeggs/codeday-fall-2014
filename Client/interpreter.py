@@ -1,6 +1,6 @@
 import client
 lines = ['']
-commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "pewpewpew", "pewpewpewpew", "pow"]}
+commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "inhale", "cook", "burn"]}
 
 wizard_commands = ['burn', "grind", "drown", "blast", "zap"]
 soldier_commands = ["shoot", "bombard", "punch", "kick", "stun"]

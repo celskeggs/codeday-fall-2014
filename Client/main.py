@@ -48,6 +48,9 @@ while 1:
       elif event.key == pygame.K_ESCAPE:
         interpreter.client.close()
         sys.exit()
+      elif event.key == pygame.K_SPACE:
+        interpreter.client.close()
+        sys.exit()
       else:
         text_input = text_input + event.unicode
 
