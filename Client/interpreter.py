@@ -41,11 +41,22 @@ def send(line):
       lines.append("You need to specify a class as a second parameter")
     else:
       classname = words[1]
-      client.send("class", classname)
+      client.send("class", classname.lower())
   elif words[0].lower() == "exit":
     sys.exit()
-  elif client.my("class", None) != None and words[0].lower() in ("help", "commands"):
+  elif client.my("class", None) != None and words[0].lower() == ("commands"):
     for command in commands[client.my("class")]:
       lines.append(command)
+  elif words[0].lower() == "help":
+    lines.append("Choose your name")
+    lines.append("Type 'name' then your choice of name")
+    lines.append("Choose your class")
+    lines.append("You may pick between a Wizard, Ranger, Soldier, and Robot")
+    lines.append("Choose by typing 'class' then your choice")
+    lines.append("Try to be the last man standing")
+    lines.append("Use your moves to injure your enemies")
+    lines.append("See your list of moves by typing 'commands'")
+    lines.append("To attack, type your move and the specified target, either 'boss' or a player's name")
+    lines.append("Have fun")
   else:
     lines.append("------Unrecognizable Command------")

@@ -22,15 +22,20 @@ display_welcome = True
 
 pygame.display.set_caption('Do that and Die')
 
-welcome = font.render("Fight your friends. Kill the boss.", 0, green)
+welcome = font.render("fight your friends. kill the boss.", 0, green)
 welcomepos = welcome.get_rect()
 welcomepos.centerx = screen.get_rect().centerx
 welcomepos.centery = screen.get_rect().centery
 
-beta = font.render("Beta 1", 0, yellow)
+beta = font.render("beta 1", 0, yellow)
 betapos = beta.get_rect()
 betapos.centerx = screen.get_rect().centerx
 betapos.centery = screen.get_rect().centery + font.get_height()
+
+instructions = font.render("type 'help' for instructions", 0, red)
+instructionspos = instructions.get_rect()
+instructionspos.centerx = screen.get_rect().centerx
+instructionspos.centery = screen.get_rect().centery + font.get_height() + font.get_height()
 
 font = pygame.font.SysFont('monospace', 16)
 
@@ -78,8 +83,8 @@ while 1:
   for i in [0, 1, 2, 3, 4]:
     n = "boss" if i == 4 else str(i)
     if interpreter.client.dictionary.get("connected." + n, False) or n == "boss":
-      player_list = font.render(interpreter.client.dictionary.get("name." + n, "None") + ": " +
-                                interpreter.client.dictionary.get("class." + n, "No Class Picked")
+      player_list = font.render(interpreter.client.dictionary.get("name." + n, "none") + ": " +
+                                interpreter.client.dictionary.get("class." + n, "no class picked")
                                 , 0, color[i])
       health = interpreter.client.dictionary.get("health." + n, None)
       if health == None:
@@ -103,17 +108,18 @@ while 1:
                                  (screen.get_rect().centery - font.get_height() * ((i * 2) - 2))))
 
   if client.my("status.bleed", 0) > 0:
-    player_bleed = font.render("You are now bleeding", 0, red)
+    player_bleed = font.render("you are now bleeding".upper(), 0, red)
     screen.blit(player_bleed, ((screen.get_rect().centerx - (player_bleed.get_width()/2), 5)))
   if client.my("status.burn", 0) > 0:
-    player_burn = font.render("You have been burnt", 0, orange)
+    player_burn = font.render("you have been burnt".upper(), 0, orange)
     screen.blit(player_burn, ((screen.get_rect().centerx - (player_burn.get_width()/2)), (font.get_height() + 5)))
   if client.my("status.paralyze", 0) > 0:
-    player_paralyze = font.render("You have been paralyzed", 0, yellow)
+    player_paralyze = font.render("you have been paralyzed".upper(), 0, yellow)
     screen.blit(player_paralyze, ((screen.get_rect().centerx - player_paralyze.get_width()/2), (font.get_height() * 2) + 5))
   if display_welcome == True:
     screen.blit(welcome, welcomepos)
     screen.blit(beta, betapos)
+    screen.blit(instructions, instructionspos)
   for i, line in enumerate(interpreter.lines, 1):
     new_line = font.render(line, 0, green)
     screen.blit(new_line, (5, (size[1] - font.get_height()) -
