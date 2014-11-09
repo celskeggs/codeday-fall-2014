@@ -39,7 +39,7 @@ def send(line):
       client.send("chat", " ".join(words[1:]))
   elif words[0].lower() == "class":
     if len(words) < 2:
-      lines.append("You need to specify a username as a second parameter")
+      lines.append("You need to specify a class as a second parameter")
     else:
       classname = words[1]
       client.send("class", classname)
