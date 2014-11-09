@@ -21,7 +21,6 @@ public class ServerHandlerThread extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				Logger.finer("Awaiting connection...");
 				Socket client = server.accept();
 				new ClientHandlerThread(client, context).start();
 			}

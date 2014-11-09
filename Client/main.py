@@ -64,7 +64,7 @@ while 1:
       interpreter.client.close()
       sys.exit()
 
-  text = font.render(text_input, 0, green)
+  text = font.render("> " + text_input, 0, green)
   screen.blit(backgroundDead if not interpreter.client.dictionary["mode.isinlobby"] and interpreter.client.my("isdead", False) else backgroundAlive, (0, 0))
   screen.blit(text, (5, size[1] - font.get_height()))
 
