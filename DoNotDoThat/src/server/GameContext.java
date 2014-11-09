@@ -10,7 +10,7 @@ import server.data.KeyValueStore;
 public class GameContext {
 	public final KeyValueStore storage = new KeyValueStore();
 	
-	public static final int turnlen = 10 * 100;
+	public static final int turnlen = 20 * 100;
 
 	public void processGame(ServerContext serverContext) {
 		ClientContext[] players = serverContext.listPlayers();
@@ -44,29 +44,33 @@ public class GameContext {
 			}
 			storage.put("attack.total", needed);
 			if (needed == count || countdown <= 0) { // TURN OVER
-				processTurn(players);
+				processTurn(serverContext, players);
 			} else {
 				storage.put("mode.countdown", countdown - 1);
 			}
 		}
 	}
 
-	public void processTurn(ClientContext[] players) {
-		this.sendChatMessage(null, "TURN IS HAPPENING");
+	public void processTurn(ServerContext server, ClientContext[] players) {
+		this.sendMessage(server, "[SUPREME SERVER MONKEY] TURN IS HAPPENING");
 		for (int i = 0; i < players.length; i++) {
-			CombatantContext target = (CombatantContext) storage.get("target."
-					+ i);
+			if (players[i] == null) {
+				continue;
+			}
+			CombatantContext target = getCombatant(players[i], (String) storage.get("target." + i));
 			String command = (String) storage.get("attack." + i);
 			if (target != null && command != null) {
-				target.setHealth(target.getHealth() - commandDamage.get(storage.get("class." + i) + "." + command));
+				int dmg = commandDamage.get(storage.get("class." + i) + "." + command);
+				this.sendMessage(server, target.getName() + " was hit by " + players[i].getName() + " for " + dmg + "!");
+				target.setHealth(target.getHealth() - dmg);
 			} else {
-				this.sendChatMessage(null, "TURN IS HAPPENING");
+				this.sendMessage(server, "[SUPREME SERVER MONKEY] TURN IS HAPPENING");
 			}
 		}
 		for (int i = 0; i < players.length; i++) {
 			storage.put("attack." + i, null);
 		}
-		storage.put("countdown", turnlen);
+		storage.put("mode.countdown", turnlen);
 	}
 
 	private CombatantContext getCombatant(ClientContext user, String name) {
@@ -133,8 +137,14 @@ public class GameContext {
 	}
 
 	public void sendChatMessage(ClientContext client, String textline) {
-		for (ClientContext target : client.serverContext.listPlayers()) {
-			target.receivedChatMessage("[" + (target == null ? "SUPREME SERVER MONKEY" : target.clientId) + "] " + textline);
+		sendMessage(client.serverContext, "[" + (client.getName() == null ? client.getID() : client.getName()) + "] " + textline);
+	}
+	
+	public void sendMessage(ServerContext context, String textline) {
+		for (ClientContext target : context.listPlayers()) {
+			if (target != null) {
+				target.receivedChatMessage(textline);
+			}
 		}
 	}
 }

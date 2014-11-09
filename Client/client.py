@@ -28,7 +28,7 @@ def getall(length):
         if data:
             out += data
         else:
-            print "Served closed connection."
+            print "Server closed connection."
             sys.exit()
     return out
 def threadbody():
@@ -60,6 +60,7 @@ def nextline():
 def my(x):
     return dictionary["%s.%d" % (x, local_id)]
 thread = threading.Thread(target=threadbody)
+thread.daemon = True
 thread.start()
 
 commands = ["hello", "enter", "attack", "chat", "name", "class"]

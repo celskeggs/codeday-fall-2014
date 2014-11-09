@@ -19,4 +19,6 @@ public abstract class CombatantContext {
 	}
 
 	public abstract Object getID();
+
+	public abstract String getName();
 }
