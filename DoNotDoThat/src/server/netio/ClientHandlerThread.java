@@ -1,5 +1,6 @@
 package server.netio;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -47,7 +48,11 @@ public class ClientHandlerThread extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			Logger.severe("Failed on client", e);
+			if (e.getMessage().equals("Connection reset") || e instanceof EOFException) {
+				Logger.severe("Client connection reset");
+			} else {
+				Logger.severe("Failed on client", e);
+			}
 		} finally {
 			if (clientContext != null) {
 				clientContext.terminated();

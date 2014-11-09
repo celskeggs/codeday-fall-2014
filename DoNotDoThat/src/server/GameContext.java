@@ -1,6 +1,5 @@
 package server;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -60,14 +59,14 @@ public class GameContext {
 									+ " suffered a sudden heart attack due to disconnecting!");
 					storage.put("health." + i, 0);
 				}
+				if (players[i] != null) {
+					players[i].updateIsDead();
+				}
 				if (!players[i].isDead()) {
 					needed++;
 					if (storage.get("attack." + i) != null) {
 						has++;
 					}
-				}
-				if (players[i] != null) {
-					players[i].updateIsDead();
 				}
 			}
 			boss.updateIsDead();
@@ -318,6 +317,10 @@ public class GameContext {
 	public void queueAttack(ClientContext client, String cmdname, String who) {
 		String cls = (String) storage.get("class." + client.clientId);
 		List<String> valid = commands.get(cls);
+		if (valid == null) {
+			Logger.severe("Invalid class: " + cls);
+			return;
+		}
 		if (!valid.contains(cmdname)) {
 			Logger.info(cls + " cannot use attack " + cmdname);
 			client.receivedChatMessage("Your class cannot use that attack!");

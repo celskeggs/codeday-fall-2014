@@ -7,7 +7,7 @@ def send(line):
   words = line.split()
   if not words:
     return
-  lines.append(line)
+  lines.append("$ " + line)
   was_byp = False
   was_found = False
   for class_name, class_commands in commands.items():
@@ -44,7 +44,7 @@ def send(line):
       client.send("class", classname)
   elif words[0].lower() == "exit":
     sys.exit()
-  elif client.my("class") != None and words[0].lower() in ("help", "commands"):
+  elif client.my("class", None) != None and words[0].lower() in ("help", "commands"):
     for command in commands[client.my("class")]:
       lines.append(command)
   else:
