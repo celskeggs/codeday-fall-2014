@@ -85,7 +85,7 @@ thread = threading.Thread(target=threadbody)
 thread.daemon = True
 thread.start()
 
-commands = ["hello", "enter", "attack", "chat", "name", "class"]
+commands = ["hello", "enter", "attack", "chat", "name", "class", "wait"]
 
 def sendraw(typeid,data):
     length = len(data)

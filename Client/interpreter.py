@@ -44,9 +44,12 @@ def send(line):
       client.send("class", classname.lower())
   elif words[0].lower() == "exit":
     sys.exit()
+  elif words[0].lower() == "wait":
+    client.send("wait", None)
   elif client.my("class", None) != None and words[0].lower() == ("commands"):
     for command in commands[client.my("class")]:
       lines.append(command)
+    lines.append("wait")
   elif words[0].lower() == "help":
     lines.append("")
     lines.append("")
