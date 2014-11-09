@@ -1,7 +1,7 @@
 import sys, pygame, interpreter, client
 pygame.init()
 
-size = 1024, 768
+size = 1024, 600
 screen = pygame.display.set_mode(size)
 background = pygame.Surface(screen.get_size())
 background = background.convert()
