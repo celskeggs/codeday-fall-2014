@@ -61,11 +61,11 @@ public class GameContext {
 				}
 				if (players[i] != null) {
 					players[i].updateIsDead();
-				}
-				if (!players[i].isDead()) {
-					needed++;
-					if (storage.get("attack." + i) != null) {
-						has++;
+					if (!players[i].isDead()) {
+						needed++;
+						if (storage.get("attack." + i) != null) {
+							has++;
+						}
 					}
 				}
 			}
@@ -120,6 +120,11 @@ public class GameContext {
 				Integer dmgO = commandDamage.get(str);
 				if (dmgO == null) {
 					Logger.warning("WARNING: NO SUCH COMMAND: " + str);
+				} else if (!player.useUpTo(str)) {
+					this.sendMessage(server,
+							"[SUPREME SERVER MONKEY] " + player.getName()
+									+ " tried to attack " + target.getName()
+									+ ", but has used the move '" + command + "' too many times!");
 				} else {
 					int dmg = dmgO;
 					if (!doSpecialAttack(server, target, player, str) || dmg != 0) {
@@ -190,10 +195,20 @@ public class GameContext {
 	}
 
 	private static final HashMap<String, List<String>> commands = new HashMap<>();
+	private static final HashMap<String, Integer> maxUses = new HashMap<>(); 
 	private static final HashMap<String, Integer> commandDamage = new HashMap<>();
 
 	public static boolean isValidClass(String className) {
 		return commands.containsKey(className) && !"boss".equals(className);
+	}
+	
+	public static int getMaxUses(String cmdname) {
+		Integer out = maxUses.get(cmdname);
+		if (out == null) {
+			Logger.severe("Nonexistent max use: " + cmdname);
+			return 1;
+		}
+		return out;
 	}
 
 	static {
@@ -206,22 +221,35 @@ public class GameContext {
 		commands.put("robot", Arrays.asList("pew", "pewpew", "inhale",
 				"cook", "burn"));
 		commands.put("boss", Arrays.asList("burn", "slam", "swipe"));
+		/*for (String cmd : new String[] {"wizard.grind", "wizard.drown", "wizard.zap", "soldier.bombard", "soldier.kick", "soldier.stun", "ranger.shank", "ranger.kick"}) {
+			maxUses.put(cmd, 2);
+		}
+		for (String cmd : new String[] {"wizard.burn", "soldier.shoot", "ranger.draw", "ranger.throw", ""}) {
+			maxUses.put(cmd, 5);
+		}
+		for (String cmd : new String[] {"wizard.blast", "soldier.punch", "ranger.slash", "robot.pew"}) {
+			maxUses.put(cmd, 10);
+		}*/
 		for (String cmd : new String[] { "wizard.zap", "soldier.stun",
 				"ranger.kick", "robot.burn" }) { // NONE
 			commandDamage.put(cmd, 0);
+			maxUses.put(cmd, 2);
 		}
 		for (String cmd : new String[] { "wizard.blast", "soldier.punch",
 				"ranger.slash", "robot.inhale", "boss.swipe" }) { // LOW
 			commandDamage.put(cmd, 1);
+			maxUses.put(cmd, 5);
 		}
 		for (String cmd : new String[] { "wizard.burn", "soldier.shoot",
 				"ranger.draw", "ranger.throw", "robot.pew", "boss.burn" }) { // MEDIUM
 			commandDamage.put(cmd, 2);
+			maxUses.put(cmd, 3);
 		}
 		for (String cmd : new String[] { "wizard.grind", "wizard.drown",
 				"soldier.bombard", "soldier.kick", "ranger.shank",
 				"robot.pewpew", "robot.cook", "boss.slam" }) { // HIGH
 			commandDamage.put(cmd, 3);
+			maxUses.put(cmd, 1);
 		}
 	}
 	
@@ -324,6 +352,10 @@ public class GameContext {
 		if (!valid.contains(cmdname)) {
 			Logger.info(cls + " cannot use attack " + cmdname);
 			client.receivedChatMessage("Your class cannot use that attack!");
+			return;
+		}
+		if (!client.canUseMove(cls + "." + cmdname)) {
+			client.receivedChatMessage("You are out of uses of that attack!");
 			return;
 		}
 		storage.put("attack." + client.clientId, cmdname);

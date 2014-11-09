@@ -85,6 +85,16 @@ while 1:
         health = "???"
       elif health <= 0:
         health = "*DEAD*"
+      else:
+        health = str(health)
+      if interpreter.client.dictionary.get("status.bleed." + n, 0) > 0:
+        health += " [BLEEDING]"
+      if interpreter.client.dictionary.get("status.burn." + n, 0) > 0:
+        health += " [BURNING]"
+      if interpreter.client.dictionary.get("status.paralyze." + n, 0) > 0:
+        health += " [PARALYZED]"
+      if interpreter.client.dictionary.get("isready." + n, False) and interpreter.client.dictionary["mode.isinlobby"]:
+        health += " [READY]"
       player_health = font.render("Health: " + str(health), 0, color[i])
       screen.blit(player_list, (size[0] - player_list.get_width() - 10,
                                                (screen.get_rect().centery - (font.get_height() * ((i * 2) - 1)))))

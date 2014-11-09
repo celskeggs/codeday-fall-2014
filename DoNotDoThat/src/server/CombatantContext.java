@@ -99,4 +99,26 @@ public abstract class CombatantContext {
 	public void applyStatusEffect(String name, int upto) {
 		setStatus(name, Math.max(getStatus(name), upto));
 	}
+	
+	public int getMoveUses(String move) {
+		Integer out = (Integer) game.storage.get("uses." + move + "." + uid);
+		return out == null ? 0 : out;
+	}
+	
+	public void useMove(String move) {
+		game.storage.put("uses." + move + "." + uid, getMoveUses(move) + 1);
+	}
+
+	public boolean canUseMove(String cmdname) {
+		return getMoveUses(cmdname) < GameContext.getMaxUses(cmdname);
+	}
+	
+	public boolean useUpTo(String cmdname) {
+		if (canUseMove(cmdname)) {
+			useMove(cmdname);
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

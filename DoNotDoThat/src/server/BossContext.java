@@ -60,4 +60,7 @@ public class BossContext extends CombatantContext {
 		return "boss";
 	}
 
+	public int getMoveUses(String move) {
+		return 0;
+	}
 }
