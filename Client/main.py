@@ -1,7 +1,7 @@
 import sys, pygame, interpreter, client
 pygame.init()
 
-size = 640, 480
+size = 1024, 768
 screen = pygame.display.set_mode(size)
 background = pygame.Surface(screen.get_size())
 background = background.convert()
@@ -26,7 +26,6 @@ status_not = font.render("BATTLE", 0, green)
 
 
 text_input = ""
-y = 420
 
 while 1:
 
@@ -57,18 +56,18 @@ while 1:
 
   text = font.render(text_input, 0, green)
   screen.blit(background, (0, 0))
-  screen.blit(text, (5, 480 - font.get_height()))
+  screen.blit(text, (5, size[1] - font.get_height()))
 
   if is_in_lobby == True:
-    screen.blit(status_lobby, (640 - status_lobby.get_width(), 0))
+    screen.blit(status_lobby, (size[0] - status_lobby.get_width(), 0))
   elif is_in_lobby == False:
-    screen.blit(status_not, (640 - status_not.get_width(), 0))
-    screen.blit(status_health, (640 - status_health.get_width(), (background.get_rect().centery - font.get_height() * 2)))
+    screen.blit(status_not, (size[0] - status_not.get_width(), 0))
+    screen.blit(status_health, (size[0] - status_health.get_width(), (background.get_rect().centery - font.get_height() * 2)))
 
   for i in range(0, 4):
     if interpreter.client.dictionary["connected." + str(i)]:
       player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "nameless"), 0, red)
-      screen.blit(player_list, (640 - player_list.get_width(), (background.get_rect().centery - (font.get_height() * (i - 2)))))
+      screen.blit(player_list, (size[0] - player_list.get_width(), (background.get_rect().centery - (font.get_height() * (i - 2)))))
 
 
   if display_welcome == True:
@@ -76,7 +75,7 @@ while 1:
 
   for i, line in enumerate(interpreter.lines, 1):
     new_line = font.render(line, 0, green)
-    screen.blit(new_line, (5, (480 - font.get_height()) -
+    screen.blit(new_line, (5, (size[1] - font.get_height()) -
                            (font.get_height() * (len(interpreter.lines) - i)) - font.get_height()))
 
 
