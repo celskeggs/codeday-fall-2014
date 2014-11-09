@@ -36,6 +36,12 @@ public class Encoder {
 			return (Integer) buf.getInt();
 		case 0x02:
 			return buf.get() != 0;
+		case 0x03:
+			Object[] contents = new Object[buf.getInt()];
+		case 0x04:
+			byte[] data = new byte[buf.getInt()];
+			buf.get(data);
+			return new String(data);
 		default:
 			Logger.severe("Unhandlable typeid: " + id);
 			return null;

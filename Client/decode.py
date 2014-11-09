@@ -15,12 +15,14 @@ def decode_i(x):
 		assert len(x) >= 2, "bad length"
 		return ord(x[1]) != 0x00, x[2:]
 	elif fb == 3:
-		ln, x = decode_i(x[1:])
+		assert len(x) >= 5, "bad length"
+		ln = decode4(x[1:5])
+		x = x[5:]
 		out = []
 		for i in range(ln):
 			elem, x = decode_i(x)
 			out.append(elem)
-		return out, x
+		return tuple(out), x
 	elif fb == 4:
 		assert len(x) >= 5, "bad length"
 		count = decode4(x[1:5])
@@ -41,7 +43,7 @@ def encode(x):
 	elif type(x) == bool:
 		return "\x02\x01" if x else "\x02\x00"
 	elif type(x) == tuple:
-		return "\x03" + encode(len(x)) + "".join(map(encode, x))
+		return "\x03" + encode4(len(x)) + "".join(map(encode, x))
 	elif type(x) == str:
 		return "\x04" + encode4(len(x)) + x
 	else:
