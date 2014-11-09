@@ -24,6 +24,9 @@ public abstract class CombatantContext {
 			setStatus(elem, 0);
 		}
 		wasParalyzed = false;
+		for (String command : GameContext.getUseBasedCommands()) {
+			setMoveUses(command, 0);
+		}
 	}
 
 	public void applyStatusEffects(ServerContext context) {
@@ -105,8 +108,16 @@ public abstract class CombatantContext {
 		return out == null ? 0 : out;
 	}
 	
+	private void setMoveUses(String move, int count) {
+		if (count == 0) {
+			game.storage.remove("uses." + move + "." + uid);
+		} else {
+			game.storage.put("uses." + move + "." + uid, count);
+		}
+	}
+	
 	public void useMove(String move) {
-		game.storage.put("uses." + move + "." + uid, getMoveUses(move) + 1);
+		setMoveUses(move, getMoveUses(move) + 1);
 	}
 
 	public boolean canUseMove(String cmdname) {

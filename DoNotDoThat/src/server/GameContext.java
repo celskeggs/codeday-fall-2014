@@ -252,6 +252,10 @@ public class GameContext {
 			maxUses.put(cmd, 1);
 		}
 	}
+
+	public static String[] getUseBasedCommands() {
+		return maxUses.keySet().toArray(new String[maxUses.size()]);
+	}
 	
 	private final Random rand = new Random();
 	
