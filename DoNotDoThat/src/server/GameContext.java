@@ -301,6 +301,13 @@ public class GameContext {
 				return true;
 			}
 			break;
+		case "boss.burn":
+			if (prob(50)) {
+				sendMessage(server, attacker.getName() + " burns " + target.getName() + "!");
+				target.applyStatusEffect("burn", 3);
+				return true;
+			}
+			break;
 		}
 		return false;
 	}

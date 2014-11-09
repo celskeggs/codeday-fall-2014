@@ -27,7 +27,6 @@ textpos.centery = background.get_rect().centery
 status_lobby = font.render("Lobby", 0, green)
 status_not = font.render("BATTLE", 0, green)
 
-
 text_input = ""
 
 while 1:
