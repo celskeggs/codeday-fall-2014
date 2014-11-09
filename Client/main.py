@@ -7,6 +7,7 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
 green = (0, 255, 0)
 red = (255, 0, 0)
+blue = (0, 0, 255)
 
 display_welcome = True
 
@@ -62,12 +63,15 @@ while 1:
     screen.blit(status_lobby, (size[0] - status_lobby.get_width(), 0))
   elif is_in_lobby == False:
     screen.blit(status_not, (size[0] - status_not.get_width(), 0))
-    screen.blit(status_health, (size[0] - status_health.get_width(), (background.get_rect().centery - font.get_height() * 2)))
+    screen.blit(status_health, (size[0] - status_health.get_width(),
+                                (background.get_rect().centery - font.get_height() * 2)))
 
   for i in range(0, 4):
     if interpreter.client.dictionary["connected." + str(i)]:
-      player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "nameless"), 0, red)
-      screen.blit(player_list, (size[0] - player_list.get_width(), (background.get_rect().centery - (font.get_height() * (i - 2)))))
+      player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "None") + ": " +
+                                interpreter.client.dictionary.get("class." + str(i), "No Class Picked"), 0, red)
+      screen.blit(player_list, (size[0] - player_list.get_width(),
+                                               (background.get_rect().centery - (font.get_height() * (i - 2)))))
 
 
   if display_welcome == True:

@@ -46,5 +46,6 @@ def send(line):
   elif words[0].lower() == "commands":
     for command in commands[client.my("class")]:
       lines.append(command)
+
   else:
     lines.append("------Unrecognizable Command------")
