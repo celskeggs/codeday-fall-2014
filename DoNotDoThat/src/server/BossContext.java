@@ -51,7 +51,7 @@ public class BossContext extends CombatantContext {
 
 	@Override
 	public String getAttackType() {
-		return attacks[random.nextInt(attacks.length)];
+		return isDead() ? null : attacks[random.nextInt(attacks.length)];
 	}
 
 	@Override

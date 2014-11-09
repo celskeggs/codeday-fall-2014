@@ -44,6 +44,7 @@ public class GameContext {
 				for (int i = 0; i < players.length; i++) {
 					storage.put("attack." + i, null);
 				}
+				sendMessage(serverContext, "[SUPREME SERVER MONKEY] Begin!");
 			}
 		} else {
 			int countdown = (int) storage.get("mode.countdown");
@@ -111,7 +112,7 @@ public class GameContext {
 				this.sendMessage(server,
 						"[SUPREME SERVER MONKEY] " + player.getName()
 								+ " tried to attack " + target.getName()
-								+ ", but is paralyzed!");
+								+ ", but was paralyzed!");
 			} else {
 				String str = player.getClassName() + "." + command;
 				Integer dmgO = commandDamage.get(str);
@@ -200,8 +201,8 @@ public class GameContext {
 				Arrays.asList("shoot", "bombard", "punch", "kick", "stun"));
 		commands.put("ranger",
 				Arrays.asList("draw", "shank", "slash", "throw", "kick"));
-		commands.put("robot", Arrays.asList("pew", "pewpew", "pewpewpew",
-				"pewpewpewpew", "pow"));
+		commands.put("robot", Arrays.asList("pew", "pewpew", "inhale",
+				"cook", "burn"));
 		commands.put("boss", Arrays.asList("burn", "slam", "swipe"));
 		for (String cmd : new String[] { "wizard.zap", "soldier.stun",
 				"ranger.kick", "robot.burn" }) { // NONE
@@ -308,6 +309,7 @@ public class GameContext {
 		String cls = (String) storage.get("class." + client.clientId);
 		List<String> valid = commands.get(cls);
 		if (!valid.contains(cmdname)) {
+			Logger.info(cls + " cannot use attack " + cmdname);
 			client.receivedChatMessage("Your class cannot use that attack!");
 			return;
 		}
