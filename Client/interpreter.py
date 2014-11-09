@@ -1,12 +1,6 @@
 import client
-lines = ['']
+lines = []
 commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "inhale", "cook", "burn"]}
-
-wizard_commands = ['burn', "grind", "drown", "blast", "zap"]
-soldier_commands = ["shoot", "bombard", "punch", "kick", "stun"]
-ranger_commands = ["draw", "shank", "slash", "throw", "kick"]
-robot_commands = ["pew", "pewpew", "inhale", "cook", "burn"]
-
 
 def send(line):
   print line
@@ -20,11 +14,9 @@ def send(line):
         lines.append("You need to specify a target")
       elif client.my("class") == class_name:
           client.send("attack", (words[0], words[1]))
-
       else:
         was_byp = True
         continue
-
       was_found = True
       return
   if was_byp and not was_found:
@@ -50,11 +42,8 @@ def send(line):
       client.send("class", classname)
   elif words[0].lower() == "exit":
     sys.exit()
-
-  elif client.my("class") != None:
-    if words[0].lower() == "commands":
-      for command in commands[client.my("class")]:
-        lines.append(command)
-
+  elif client.my("class") != None and words[0].lower() == "commands":
+    for command in commands[client.my("class")]:
+      lines.append(command)
   else:
     lines.append("------Unrecognizable Command------")

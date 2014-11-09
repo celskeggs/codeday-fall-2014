@@ -10,11 +10,20 @@ import server.logger.Logger;
 
 public class GameContext {
 	public final KeyValueStore storage = new KeyValueStore();
+	public final BossContext boss = new BossContext(this);
 
 	public static final int turnlen = 20 * 100;
+	
+	private CombatantContext[] getCombatants(ServerContext serverContext) {
+		CombatantContext[] players = serverContext.listPlayers();
+		CombatantContext[] out = new CombatantContext[players.length + 1];
+		System.arraycopy(players, 0, out, 0, players.length);
+		out[players.length] = boss;
+		return out;
+	}
 
 	public void processGame(ServerContext serverContext) {
-		ClientContext[] players = serverContext.listPlayers();
+		CombatantContext[] players = serverContext.listPlayers();
 		int count = 0, ready = 0;
 		for (int i = 0; i < players.length; i++) {
 			storage.put("connected." + i, players[i] != null);
@@ -53,53 +62,25 @@ public class GameContext {
 					needed++;
 				}
 				if (players[i] != null) {
-					storage.put("isdead." + i, players[i].getHealth() <= 0);
+					players[i].updateIsDead();
 				}
 			}
+			boss.updateIsDead();
 			storage.put("attack.total", needed);
-			if (needed == count || countdown <= 0) { // TURN OVER
+			if (needed >= count || countdown <= 0) { // TURN OVER
 				processTurn(serverContext, players);
 			} else {
 				storage.put("mode.countdown", countdown - 1);
 			}
-			checkWin(serverContext, players);
+			checkWin(serverContext, getCombatants(serverContext));
 		}
 	}
 
-	public void processTurn(ServerContext server, ClientContext[] players) {
+	public void processTurn(ServerContext server, CombatantContext[] players) {
 		this.sendMessage(server, "[SUPREME SERVER MONKEY] TURN IS HAPPENING");
-		for (int i = 0; i < players.length; i++) {
-			if (players[i] == null) {
-				continue;
-			}
-			String targetname = (String) storage.get("target." + i);
-			if (targetname != null) {
-				CombatantContext target = getCombatant(players[i], targetname);
-				String command = (String) storage.get("attack." + i);
-				if (target != null && command != null) {
-					if (players[i].isDead()) {
-						this.sendMessage(server, "[SUPREME SERVER MONKEY] "
-								+ players[i].getName() + " tried to attack "
-								+ target.getName() + ", but is dead!");
-					} else {
-						String str = storage.get("class." + i) + "." + command;
-						Integer dmgO = commandDamage.get(str);
-						if (dmgO == null) {
-							Logger.warning("WARNING: NO SUCH COMMAND: " + str);
-						} else {
-							int dmg = dmgO;
-							this.sendMessage(server, target.getName()
-									+ " was hit by " + players[i].getName()
-									+ " for " + dmg + "!");
-							target.setHealth(target.getHealth() - dmg);
-						}
-					}
-					continue;
-				}
-			}
-			if (!players[i].isDead()) {
-				this.sendMessage(server, "[SUPREME SERVER MONKEY] "
-						+ players[i].getName() + " decided to do nothing.");
+		for (CombatantContext comb : getCombatants(server)) {
+			if (comb != null) {
+				handleCombatant(server, getCombatants(server), comb);
 			}
 		}
 		for (int i = 0; i < players.length; i++) {
@@ -108,9 +89,40 @@ public class GameContext {
 		storage.put("mode.countdown", turnlen);
 	}
 
-	public void checkWin(ServerContext server, ClientContext[] players) {
+	private void handleCombatant(ServerContext server,
+			CombatantContext[] players, CombatantContext player) {
+		String targetname = player.getTargetName(players);
+		CombatantContext target = targetname == null ? null : getCombatant(
+				players, player, targetname);
+		String command = player.getAttackType();
+		if (target != null && command != null) {
+			if (player.isDead()) {
+				this.sendMessage(server,
+						"[SUPREME SERVER MONKEY] " + player.getName()
+								+ " tried to attack " + target.getName()
+								+ ", but is dead!");
+			} else {
+				String str = player.getClassName() + "." + command;
+				Integer dmgO = commandDamage.get(str);
+				if (dmgO == null) {
+					Logger.warning("WARNING: NO SUCH COMMAND: " + str);
+				} else {
+					int dmg = dmgO;
+					this.sendMessage(server, target.getName() + " was hit by "
+							+ player.getName() + " for " + dmg + "!");
+					target.setHealth(target.getHealth() - dmg);
+				}
+			}
+		} else if (!player.isDead()) {
+			this.sendMessage(server,
+					"[SUPREME SERVER MONKEY] " + player.getName()
+							+ " decided to do nothing.");
+		}
+	}
+
+	public void checkWin(ServerContext server, CombatantContext[] players) {
 		int alive = 0;
-		ClientContext winner = null;
+		CombatantContext winner = null;
 		for (int i = 0; i < players.length; i++) {
 			if (players[i] != null && !players[i].isDead()) {
 				alive++;
@@ -119,30 +131,33 @@ public class GameContext {
 		}
 		if (alive == 1) {
 			this.sendMessage(server,
-					"[SUPREME SERVER MONKEY] " + winner.getName() + " has won! Resetting server.");
+					"[SUPREME SERVER MONKEY] " + winner.getName()
+							+ " has won! Resetting server.");
 		} else if (alive == 0) {
 			this.sendMessage(server,
 					"[SUPREME SERVER MONKEY] Everyone is DEAD! Resetting server.");
 		} else {
 			return;
 		}
-		resetRound(players);
-	}
-	
-	public void resetRound(ClientContext[] players) {
-		storage.put("mode.isinlobby", true);
-		for (ClientContext ply : players) {
-			if (ply != null) {
-				ply.resetPlayer();
-			}
-		}
+		resetRound(server, players);
 	}
 
-	private CombatantContext getCombatant(ClientContext user, String name) {
+	public void resetRound(ServerContext server, CombatantContext[] players) {
+		storage.put("mode.isinlobby", true);
+		for (CombatantContext ply : players) {
+			if (ply != null) {
+				ply.resetCombatant();
+			}
+		}
+		this.sendMessage(server,
+				"[SUPREME SERVER MONKEY] New round. You may reselect your class.");
+	}
+
+	private CombatantContext getCombatant(CombatantContext[] plys,
+			CombatantContext user, String name) {
 		if (name.equals("self")) {
 			return user;
 		}
-		ClientContext[] plys = user.serverContext.listPlayers();
 		for (int i = 0; i < plys.length; i++) {
 			if (plys[i] != null
 					&& (name.equals(plys[i].getName()) || name.equals(plys[i]
@@ -161,7 +176,7 @@ public class GameContext {
 	private static final HashMap<String, Integer> commandDamage = new HashMap<>();
 
 	public static boolean isValidClass(String className) {
-		return commands.containsKey(className);
+		return commands.containsKey(className) && !"boss".equals(className);
 	}
 
 	static {
@@ -173,21 +188,22 @@ public class GameContext {
 				Arrays.asList("draw", "shank", "slash", "throw", "kick"));
 		commands.put("robot", Arrays.asList("pew", "pewpew", "pewpewpew",
 				"pewpewpewpew", "pow"));
+		commands.put("boss", Arrays.asList("burn", "slam", "swipe"));
 		for (String cmd : new String[] { "wizard.zap", "soldier.stun",
 				"ranger.kick", "robot.burn" }) { // NONE
 			commandDamage.put(cmd, 0);
 		}
 		for (String cmd : new String[] { "wizard.blast", "soldier.punch",
-				"ranger.slash", "robot.inhale" }) { // LOW
+				"ranger.slash", "robot.inhale", "boss.swipe" }) { // LOW
 			commandDamage.put(cmd, 1);
 		}
 		for (String cmd : new String[] { "wizard.burn", "soldier.shoot",
-				"ranger.draw", "ranger.throw", "robot.pew" }) { // MEDIUM
+				"ranger.draw", "ranger.throw", "robot.pew", "boss.burn" }) { // MEDIUM
 			commandDamage.put(cmd, 2);
 		}
 		for (String cmd : new String[] { "wizard.grind", "wizard.drown",
 				"soldier.bombard", "soldier.kick", "ranger.shank",
-				"robot.pewpew", "robot.cook" }) { // HIGH
+				"robot.pewpew", "robot.cook", "boss.slam" }) { // HIGH
 			commandDamage.put(cmd, 3);
 		}
 	}
@@ -200,7 +216,7 @@ public class GameContext {
 			return;
 		}
 		storage.put("attack." + client.clientId, cmdname);
-		CombatantContext out = getCombatant(client, who);
+		CombatantContext out = getCombatant(getCombatants(client.serverContext), client, who);
 		if (out != null) {
 			storage.put("target." + client.clientId, out.getID());
 		} else {

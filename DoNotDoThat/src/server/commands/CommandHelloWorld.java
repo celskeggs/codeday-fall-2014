@@ -3,14 +3,14 @@ package server.commands;
 import server.GameContext;
 
 public class CommandHelloWorld extends Command {
-	private final Object value;
+	private final String value;
 
 	public CommandHelloWorld(Object obj) {
-		this.value = obj;
+		this.value = (String) obj;
 	}
 
 	@Override
 	public void process(GameContext context) {
-		context.storage.put("hello." + client.clientId, value);
+		context.storage.put("hello." + client.clientId, value.substring(0, 32));
 	}
 }

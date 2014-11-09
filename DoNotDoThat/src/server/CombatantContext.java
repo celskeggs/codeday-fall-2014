@@ -1,7 +1,7 @@
 package server;
 
 public abstract class CombatantContext {
-	private final GameContext game;
+	protected final GameContext game;
 	private String uid;
 
 	public CombatantContext(GameContext game, int health, String uid) {
@@ -22,7 +22,19 @@ public abstract class CombatantContext {
 		game.storage.put("health." + uid, health);
 	}
 
-	public abstract Object getID();
+	public abstract String getID();
 
 	public abstract String getName();
+
+	public abstract void resetCombatant();
+
+	public abstract String getTargetName(CombatantContext[] combatants);
+
+	public abstract String getAttackType();
+
+	public abstract String getClassName();
+
+	public void updateIsDead() {
+		game.storage.put("isdead." + uid, getHealth() <= 0);
+	}
 }

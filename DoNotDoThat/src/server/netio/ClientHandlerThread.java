@@ -31,6 +31,13 @@ public class ClientHandlerThread extends Thread {
 			p.type = 0x0408;
 			p.data = new byte[] {(byte) clientContext.clientId};
 			pout.write(p);
+			if (!clientContext.isValid()) {
+				if (!(Boolean) serverContext.context.storage.get("mode.isinlobby")) {
+					clientContext.receivedChatMessage("The game has already started.");
+				} else {
+					clientContext.receivedChatMessage("Too many players.");
+				}
+			}
 			input = new PacketInputStream(client.getInputStream());
 			serverContext.addCommandToQueue(new CommandClientJoin(clientContext));
 			while (!end && !Thread.interrupted()) {

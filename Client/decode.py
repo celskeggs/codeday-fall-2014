@@ -13,7 +13,7 @@ def decode_i(x):
 		return None, x[1:]
 	elif fb == 1:
 		assert len(x) >= 5, "bad length"
-		return decode4(x[1:5]), x[5:]
+		return decode4(x[1:5], True), x[5:]
 	elif fb == 2:
 		assert len(x) >= 2, "bad length"
 		return ord(x[1]) != 0x00, x[2:]

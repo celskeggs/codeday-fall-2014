@@ -80,10 +80,19 @@ public class ClientContext extends CombatantContext {
 		return "#" + clientId;
 	}
 
-	public void resetPlayer() {
+	public void resetCombatant() {
 		serverContext.context.storage.remove("class." + clientId);
 		serverContext.context.storage.put("isready." + clientId, false);
 		setHealth(DEFAULT_PLAYER_HEALTH);
-		
+	}
+
+	@Override
+	public String getTargetName(CombatantContext[] combatants) {
+		return (String) serverContext.context.storage.get("target." + clientId);
+	}
+
+	@Override
+	public String getAttackType() {
+		return (String) serverContext.context.storage.get("attack." + clientId);
 	}
 }
