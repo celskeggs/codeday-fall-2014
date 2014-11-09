@@ -46,5 +46,7 @@ def encode(x):
 		return "\x03" + encode4(len(x)) + "".join(map(encode, x))
 	elif type(x) == str:
 		return "\x04" + encode4(len(x)) + x
+	elif type(x) == unicode:
+		return "\x04" + encode4(len(x)) + x.encode()
 	else:
 		raise Exception("unhandled type: %s" % type(x))

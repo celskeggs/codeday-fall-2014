@@ -35,8 +35,9 @@ public class GameContext {
 	}
 
 	public void queueAttack(ClientContext client, String cmdname) {
-		// TODO Auto-generated method stub
-
+		String cls = (String) storage.get("class." + client.clientId);
+		
+		storage.put("attack." + client.clientId, cmdname);
 	}
 
 	public void sendChatMessage(ClientContext client, String textline) {
