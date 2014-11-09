@@ -26,6 +26,11 @@ welcomepos = welcome.get_rect()
 welcomepos.centerx = screen.get_rect().centerx
 welcomepos.centery = screen.get_rect().centery
 
+beta = font.render("Beta 1", 0, yellow)
+betapos = beta.get_rect()
+betapos.centerx = screen.get_rect().centerx
+betapos.centery = screen.get_rect().centery + font.get_height()
+
 font = pygame.font.SysFont('monospace', 16)
 
 status_lobby = font.render("LOBBY", 0, green)
@@ -88,7 +93,7 @@ while 1:
 
   if display_welcome == True:
     screen.blit(welcome, welcomepos)
-
+    screen.blit(beta, betapos)
   for i, line in enumerate(interpreter.lines, 1):
     new_line = font.render(line, 0, green)
     screen.blit(new_line, (5, (size[1] - font.get_height()) -
