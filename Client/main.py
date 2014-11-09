@@ -30,7 +30,7 @@ y = 420
 
 while 1:
 
-  status_health = font.render(str(client.my("health")), 0, red)
+  status_health = font.render("Health: " + str(client.my("health")), 0, red)
 
   is_in_lobby = client.dictionary.get("mode.isinlobby", True)
   receive_line = interpreter.client.nextline()
@@ -52,13 +52,12 @@ while 1:
   text = font.render(text_input, 0, green)
   screen.blit(background, (0, 0))
   screen.blit(text, (5, 480 - font.get_height()))
-  screen.blit(status_health)
 
   if is_in_lobby == True:
     screen.blit(status_lobby, (640 - status_lobby.get_width(), 0))
-    screen.blit(status_health, (640 - status_health.get_width(), (centery - font.get_height() * 2)))
   elif is_in_lobby == False:
     screen.blit(status_not, (640 - status_not.get_width(), 0))
+    screen.blit(status_health, (640 - status_health.get_width(), (background.get_rect().centery - font.get_height() * 2)))
 
   if display_welcome == True:
     screen.blit(welcome, textpos)
