@@ -1,6 +1,6 @@
 import client
 lines = ['']
-commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "pewpewpew", "pewpewpewpew", "pow"]}
+commands = {"wizard": ["burn", "grind", "drown", "blast", "zap"], "soldier": ["shoot", "bombard", "punch", "kick", "stun"], "ranger": ["draw", "shank", "slash", "throw", "kick"], "robot": ["pew", "pewpew", "inhale", "cook", "burn"]}
 
 wizard_commands = ['burn', "grind", "drown", "blast", "zap"]
 soldier_commands = ["shoot", "bombard", "punch", "kick", "stun"]
@@ -39,12 +39,13 @@ def send(line):
       client.send("chat", " ".join(words[1:]))
   elif words[0].lower() == "class":
     if len(words) < 2:
-      lines.append("You need to specify a username as a second parameter")
+      lines.append("You need to specify a class as a second parameter")
     else:
       classname = words[1]
       client.send("class", classname)
-  elif words[0].lower() == "help":
+  elif words[0].lower() == "commands":
     for command in commands[client.my("class")]:
       lines.append(command)
+
   else:
     lines.append("------Unrecognizable Command------")
