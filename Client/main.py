@@ -65,6 +65,12 @@ while 1:
     screen.blit(status_not, (640 - status_not.get_width(), 0))
     screen.blit(status_health, (640 - status_health.get_width(), (background.get_rect().centery - font.get_height() * 2)))
 
+    for i in range(0, 4)
+      if interpreter.client.dictionary["connected." + str(i)]:
+        player_list = font.render(interpreter.client.dictionary.get("name." + str(i), "nameless"))
+        screen.blit(player_list, (640 - player_list.get_width(), (background.get_rect().centery - (font.get_height() * (i - 2)))))
+
+
   if display_welcome == True:
     screen.blit(welcome, textpos)
 
