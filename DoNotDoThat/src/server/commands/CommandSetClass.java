@@ -11,10 +11,15 @@ public class CommandSetClass extends Command {
 
 	@Override
 	public void process(GameContext context) {
-		if (client.getName() == null) {
-			client.setName(name);
+		if (client.getClassName() == null) {
+			if (GameContext.isValidClass(name)) {
+				client.setClassName(name);
+				client.receivedChatMessage("You are now a " + name + "!");
+			} else {
+				client.receivedChatMessage("Invalid class '" + name + "'");
+			}
 		} else {
-			client.receivedChatMessage("You already set your name!");
+			client.receivedChatMessage("You already set your class!");
 		}
 	}
 }

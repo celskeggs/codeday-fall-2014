@@ -1,6 +1,6 @@
 package server;
 
-public class CombatantContext {
+public abstract class CombatantContext {
 	private final GameContext game;
 	private String uid;
 
@@ -17,4 +17,6 @@ public class CombatantContext {
 	public void setHealth(int health) {
 		game.storage.put("health." + uid, health);
 	}
+
+	public abstract Object getID();
 }

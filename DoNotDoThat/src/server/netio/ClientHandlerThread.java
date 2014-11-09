@@ -25,8 +25,12 @@ public class ClientHandlerThread extends Thread {
 		ClientContext clientContext = null;
 		try {
 			Logger.info("Client connected: " + client.getRemoteSocketAddress());
-			clientContext = serverContext.getClientContext(
-					new PacketOutputStream(client.getOutputStream()), this);
+			PacketOutputStream pout = new PacketOutputStream(client.getOutputStream());
+			clientContext = serverContext.getClientContext(pout, this);
+			Packet p = new Packet();
+			p.type = 0x0408;
+			p.data = new byte[] {(byte) clientContext.clientId};
+			pout.write(p);
 			input = new PacketInputStream(client.getInputStream());
 			serverContext.addCommandToQueue(new CommandClientJoin(clientContext));
 			while (!end && !Thread.interrupted()) {

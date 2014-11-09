@@ -65,4 +65,17 @@ public class ClientContext extends CombatantContext {
 	public void setName(String name) {
 		serverContext.context.storage.put("name." + clientId, name);
 	}
+
+	public String getClassName() {
+		return (String) serverContext.context.storage.get("class." + clientId);
+	}
+
+	public void setClassName(String name) {
+		serverContext.context.storage.put("class." + clientId, name);
+	}
+
+	@Override
+	public String getID() {
+		return "p" + clientId;
+	}
 }

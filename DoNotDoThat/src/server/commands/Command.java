@@ -14,7 +14,6 @@ public abstract class Command {
 
 	public ClientContext client;
 
-	@SuppressWarnings("unchecked")
 	private static final ArrayList<Class<? extends Command>> classes = new ArrayList<>();
 
 	static {

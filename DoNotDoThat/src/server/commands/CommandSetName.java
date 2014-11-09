@@ -13,6 +13,7 @@ public class CommandSetName extends Command {
 	public void process(GameContext context) {
 		if (client.getName() == null) {
 			client.setName(name);
+			client.receivedChatMessage("Hello, " + name + "!");
 		} else {
 			client.receivedChatMessage("You already set your name!");
 		}

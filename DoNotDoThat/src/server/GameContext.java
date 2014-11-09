@@ -47,6 +47,7 @@ public class GameContext {
 	}
 
 	public void processTurn(ClientContext[] players) {
+		this.sendChatMessage(null, "TURN IS HAPPENING");
 		for (int i = 0; i < players.length; i++) {
 			CombatantContext target = (CombatantContext) storage.get("target."
 					+ i);
@@ -66,7 +67,7 @@ public class GameContext {
 		}
 		ClientContext[] plys = user.serverContext.listPlayers();
 		for (int i=0; i<plys.length; i++) {
-			if (name.equals(plys[i].getName()) || name.equals("#" + i)) {
+			if (name.equals(plys[i].getName()) || name.equals(plys[i].getID())) {
 				return plys[i];
 			}
 		}
@@ -80,6 +81,10 @@ public class GameContext {
 	private static final HashMap<String, List<String>> commands = new HashMap<>();
 	private static final HashMap<String, Integer> commandDamage = new HashMap<>();
 
+	public static boolean isValidClass(String className) {
+		return commands.containsKey(className);
+	}
+	
 	static {
 		commands.put("wizard",
 				Arrays.asList("burn", "grind", "drown", "blast", "zap"));
@@ -113,7 +118,7 @@ public class GameContext {
 		storage.put("attack." + client.clientId, cmdname);
 		CombatantContext out = getCombatant(client, who);
 		if (out != null) {
-			storage.put("target." + client.clientId, out);
+			storage.put("target." + client.clientId, out.getID());
 		} else {
 			client.receivedChatMessage("I don't know who you mean!");
 		}
@@ -121,7 +126,7 @@ public class GameContext {
 
 	public void sendChatMessage(ClientContext client, String textline) {
 		for (ClientContext target : client.serverContext.listPlayers()) {
-			target.receivedChatMessage("[" + target.clientId + "] " + textline);
+			target.receivedChatMessage("[" + (target == null ? "SUPREME SERVER MONKEY" : target.clientId) + "] " + textline);
 		}
 	}
 }

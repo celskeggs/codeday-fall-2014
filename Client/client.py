@@ -9,6 +9,7 @@ s.connect((host, port))
 
 dictionary = {}
 chatlines = Queue.Queue()
+local_id = -2
 
 def encode2(x):
     return chr((x >> 8) & 0xFF) + chr(x & 0xFF)
@@ -46,6 +47,9 @@ def threadbody():
             dictionary[key] = decode.decode(body)
         elif typeid == 0x0306:
             chatlines.put(data)
+		elif typeid == 0x0408:
+			global local_id
+			local_id = ord(data[0])
         else:
             raise Exception("unhandled data command: %d" % typeid)
 def nextline():
