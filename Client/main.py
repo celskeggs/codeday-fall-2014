@@ -1,5 +1,11 @@
-import sys, pygame, interpreter, client
+import sys, pygame, interpreter, client, os
 pygame.init()
+
+x = 100
+y = 50
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d, %d" % (x, y)
+
 
 size = 1024, 600
 screen = pygame.display.set_mode(size)
