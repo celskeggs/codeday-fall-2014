@@ -46,7 +46,7 @@ public class ClientContext extends CombatantContext {
 	}
 
 	public void receivedChatMessage(String string) {
-		Logger.info("Sending message " + string + " to client." + this.clientId);
+		Logger.info("Sending message '" + string + "' -> client." + this.clientId);
 		Packet p = new Packet();
 		p.type = 0x0306;
 		p.data = string.getBytes();

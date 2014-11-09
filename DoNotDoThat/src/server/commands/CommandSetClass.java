@@ -21,7 +21,7 @@ public class CommandSetClass extends Command {
 						if (plyname == null) {
 							plyname = "player" + players[i].getID();
 						}
-						client.receivedChatMessage("The class '" + name + " is already taken by " + plyname);
+						client.receivedChatMessage("The class '" + name + "' is already taken by " + plyname);
 						return;
 					}
 				}

@@ -9,7 +9,7 @@ import server.data.KeyValueStore;
 
 public class GameContext {
 	public final KeyValueStore storage = new KeyValueStore();
-	
+
 	public static final int turnlen = 20 * 100;
 
 	public void processGame(ServerContext serverContext) {
@@ -38,6 +38,11 @@ public class GameContext {
 			int countdown = (int) storage.get("mode.countdown");
 			int needed = 0;
 			for (int i = 0; i < players.length; i++) {
+				if (players[i] != null && !(Boolean) storage.get("connected." + i) && (Integer) storage.get("health." + i) > 0) {
+					this.sendMessage(serverContext, "[SUPREME SERVER MONKEY] "
+							+ players[i].getName() + " suffered a sudden heart attack due to disconnecting!");
+					storage.put("health." + i, 0);
+				}
 				if (storage.get("attack." + i) != null) {
 					needed++;
 				}
@@ -57,14 +62,29 @@ public class GameContext {
 			if (players[i] == null) {
 				continue;
 			}
-			CombatantContext target = getCombatant(players[i], (String) storage.get("target." + i));
-			String command = (String) storage.get("attack." + i);
-			if (target != null && command != null) {
-				int dmg = commandDamage.get(storage.get("class." + i) + "." + command);
-				this.sendMessage(server, target.getName() + " was hit by " + players[i].getName() + " for " + dmg + "!");
-				target.setHealth(target.getHealth() - dmg);
-			} else {
-				this.sendMessage(server, "[SUPREME SERVER MONKEY] TURN IS HAPPENING");
+			String targetname = (String) storage.get("target." + i);
+			if (targetname != null) {
+				CombatantContext target = getCombatant(players[i], targetname);
+				String command = (String) storage.get("attack." + i);
+				if (target != null && command != null) {
+					if (players[i].isDead()) {
+						this.sendMessage(server, "[SUPREME SERVER MONKEY] "
+								+ players[i].getName() + " tried to attack "
+								+ target.getName() + ", but is dead!");
+					} else {
+						int dmg = commandDamage.get(storage.get("class." + i)
+								+ "." + command);
+						this.sendMessage(server, target.getName()
+								+ " was hit by " + players[i].getName()
+								+ " for " + dmg + "!");
+						target.setHealth(target.getHealth() - dmg);
+					}
+					continue;
+				}
+			}
+			if (!players[i].isDead()) {
+				this.sendMessage(server, "[SUPREME SERVER MONKEY] "
+						+ players[i].getName() + " decided to do nothing.");
 			}
 		}
 		for (int i = 0; i < players.length; i++) {
@@ -78,8 +98,10 @@ public class GameContext {
 			return user;
 		}
 		ClientContext[] plys = user.serverContext.listPlayers();
-		for (int i=0; i<plys.length; i++) {
-			if (plys[i] != null && (name.equals(plys[i].getName()) || name.equals(plys[i].getID()))) {
+		for (int i = 0; i < plys.length; i++) {
+			if (plys[i] != null
+					&& (name.equals(plys[i].getName()) || name.equals(plys[i]
+							.getID()))) {
 				return plys[i];
 			}
 		}
@@ -96,7 +118,7 @@ public class GameContext {
 	public static boolean isValidClass(String className) {
 		return commands.containsKey(className);
 	}
-	
+
 	static {
 		commands.put("wizard",
 				Arrays.asList("burn", "grind", "drown", "blast", "zap"));
@@ -106,16 +128,21 @@ public class GameContext {
 				Arrays.asList("draw", "shank", "slash", "throw", "kick"));
 		commands.put("robot", Arrays.asList("pew", "pewpew", "pewpewpew",
 				"pewpewpewpew", "pow"));
-		for (String cmd : new String[] {"wizard.zap", "soldier.stun", "ranger.kick", "robot.burn"}) { // NONE
+		for (String cmd : new String[] { "wizard.zap", "soldier.stun",
+				"ranger.kick", "robot.burn" }) { // NONE
 			commandDamage.put(cmd, 0);
 		}
-		for (String cmd : new String[] {"wizard.blast", "soldier.punch", "ranger.slash", "robot.inhale"}) { // LOW
+		for (String cmd : new String[] { "wizard.blast", "soldier.punch",
+				"ranger.slash", "robot.inhale" }) { // LOW
 			commandDamage.put(cmd, 1);
 		}
-		for (String cmd : new String[] {"wizard.burn", "soldier.shoot", "ranger.draw", "ranger.throw", "robot.pew"}) { // MEDIUM
+		for (String cmd : new String[] { "wizard.burn", "soldier.shoot",
+				"ranger.draw", "ranger.throw", "robot.pew" }) { // MEDIUM
 			commandDamage.put(cmd, 2);
 		}
-		for (String cmd : new String[] {"wizard.grind", "wizard.drown", "soldier.bombard", "soldier.kick", "ranger.shank", "robot.pewpew", "robot.cook"}) { // HIGH
+		for (String cmd : new String[] { "wizard.grind", "wizard.drown",
+				"soldier.bombard", "soldier.kick", "ranger.shank",
+				"robot.pewpew", "robot.cook" }) { // HIGH
 			commandDamage.put(cmd, 3);
 		}
 	}
@@ -137,9 +164,13 @@ public class GameContext {
 	}
 
 	public void sendChatMessage(ClientContext client, String textline) {
-		sendMessage(client.serverContext, "[" + (client.getName() == null ? client.getID() : client.getName()) + "] " + textline);
+		sendMessage(
+				client.serverContext,
+				"["
+						+ (client.getName() == null ? client.getID() : client
+								.getName()) + "] " + textline);
 	}
-	
+
 	public void sendMessage(ServerContext context, String textline) {
 		for (ClientContext target : context.listPlayers()) {
 			if (target != null) {

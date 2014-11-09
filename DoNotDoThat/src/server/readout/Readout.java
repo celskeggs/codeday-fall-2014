@@ -1,5 +1,6 @@
 package server.readout;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +20,10 @@ import server.logger.Logger;
 public class Readout {
 	public static void start(KeyValueStore store) {
 		final JFrame jframe = new JFrame("Server Readout");
+		jframe.setBackground(Color.WHITE);
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		final JPanel main = new JPanel();
+		main.setBackground(Color.WHITE);
 		final JList<Pair> jl = new JList<>();
 		final DefaultListModel<Pair> model = new DefaultListModel<>();
 		jl.setModel(model);
