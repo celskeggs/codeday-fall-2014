@@ -57,6 +57,8 @@ def nextline():
         return chatlines.get_nowait()
     except Queue.Empty:
         return None
+def my(x):
+	return dictionary["%s.%d" % (x, local_id)]
 thread = threading.Thread(target=threadbody)
 thread.start()
 
