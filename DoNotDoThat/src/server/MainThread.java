@@ -19,7 +19,7 @@ public class MainThread extends Thread {
 		Readout.start(context.context.storage, context);
 		Random rand = new Random();
 		int port = 50002 + rand.nextInt(10000);
-		RouteClient cli = new RouteClient("10.251.14.147", 50001);
+		RouteClient cli = new RouteClient(args.length == 0 ? "10.251.14.147" : args[0], 50001);
 		String localAddress = getLocalAddress();
 		cli.start(localAddress, port);
 		context.route = cli;
@@ -27,7 +27,7 @@ public class MainThread extends Thread {
 		new MainThread(context).start();
 	}
 
-	private static String getLocalAddress() throws SocketException {
+	public static String getLocalAddress() throws SocketException {
 		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 		while (interfaces.hasMoreElements()){
 		    NetworkInterface current = interfaces.nextElement();

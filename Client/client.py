@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import socket, threading, decode, Queue, hashlib
+import socket, threading, decode, Queue, hashlib, sys
 
 def getall(length, sock):
     out = ""
@@ -22,7 +22,22 @@ def parse4(x):
     return (ord(x[0]) << 24) | (ord(x[1]) << 16) | (ord(x[2]) << 8) | ord(x[3])
 def ask_route_server():
 	ls = socket.socket()
-	ls.connect(("10.251.14.147", 50001))
+	oldtimeout = ls.gettimeout()
+	ls.settimeout(3)
+	try:
+		ls.connect(("10.251.14.147", 50001))
+	except socket.error:
+		try:
+			ls.connect(("127.0.0.1", 50001))
+		except socket.error:
+			ls.settimeout(oldtimeout)
+			try:
+				ls.connect((raw_input("Enter the route server or LiteServer IP address> "), 50001))
+			except socket.error:
+				print "Route server or LiteServer not contacted."
+				raw_input("Press enter...")
+				sys.exit()
+	ls.settimeout(oldtimeout)
 	ls.send(encode4(0xDEADBEEF))
 	b = (getall(1, ls) == 0)
 	len = parse2(getall(2, ls))
