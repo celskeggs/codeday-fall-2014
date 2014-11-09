@@ -76,6 +76,6 @@ public class ClientContext extends CombatantContext {
 
 	@Override
 	public String getID() {
-		return "p" + clientId;
+		return "#" + clientId;
 	}
 }

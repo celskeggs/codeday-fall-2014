@@ -16,6 +16,7 @@ import server.netio.PacketOutputStream;
 public class KeyValueStore {
 	private final HashMap<String, Object> data = new HashMap<>();
 	private final LinkedHashSet<String> dirty = new LinkedHashSet<>();
+	private IMonitor monitor;
 
 	public synchronized Object get(String key) {
 		return data.get(key);
@@ -72,6 +73,16 @@ public class KeyValueStore {
 	}
 
 	public synchronized void sendUpdatesAll(ClientContext[] clients) {
+		if (monitor != null) {
+			for (String key : dirty) {
+				if (data.containsKey(key)) {
+					monitor.set(key, data.get(key));
+				} else {
+					monitor.remove(key);
+				}
+			}
+			monitor.commit();
+		}
 		for (ClientContext client : clients) {
 			if (client != null) {
 				try {
@@ -90,5 +101,9 @@ public class KeyValueStore {
 		for (String key : data.keySet()) {
 			dirty.add(key);
 		}
+	}
+
+	public void setMonitor(IMonitor iMonitor) {
+		this.monitor = iMonitor;
 	}
 }

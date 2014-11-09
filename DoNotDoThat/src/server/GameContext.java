@@ -9,6 +9,8 @@ import server.data.KeyValueStore;
 
 public class GameContext {
 	public final KeyValueStore storage = new KeyValueStore();
+	
+	public static final int turnlen = 10 * 100;
 
 	public void processGame(ServerContext serverContext) {
 		ClientContext[] players = serverContext.listPlayers();
@@ -27,7 +29,7 @@ public class GameContext {
 		if (b != null && b) {
 			if (count >= 2 && count == ready) {
 				storage.put("mode.isinlobby", false);
-				storage.put("mode.countdown", 30);
+				storage.put("mode.countdown", turnlen);
 				for (int i = 0; i < players.length; i++) {
 					storage.put("attack." + i, null);
 				}
@@ -36,12 +38,15 @@ public class GameContext {
 			int countdown = (int) storage.get("mode.countdown");
 			int needed = 0;
 			for (int i = 0; i < players.length; i++) {
-				if (storage.get("attack." + players) != null) {
+				if (storage.get("attack." + i) != null) {
 					needed++;
 				}
 			}
+			storage.put("attack.total", needed);
 			if (needed == count || countdown <= 0) { // TURN OVER
 				processTurn(players);
+			} else {
+				storage.put("mode.countdown", countdown - 1);
 			}
 		}
 	}
@@ -54,11 +59,14 @@ public class GameContext {
 			String command = (String) storage.get("attack." + i);
 			if (target != null && command != null) {
 				target.setHealth(target.getHealth() - commandDamage.get(storage.get("class." + i) + "." + command));
+			} else {
+				this.sendChatMessage(null, "TURN IS HAPPENING");
 			}
 		}
 		for (int i = 0; i < players.length; i++) {
 			storage.put("attack." + i, null);
 		}
+		storage.put("countdown", turnlen);
 	}
 
 	private CombatantContext getCombatant(ClientContext user, String name) {
@@ -67,7 +75,7 @@ public class GameContext {
 		}
 		ClientContext[] plys = user.serverContext.listPlayers();
 		for (int i=0; i<plys.length; i++) {
-			if (name.equals(plys[i].getName()) || name.equals(plys[i].getID())) {
+			if (plys[i] != null && (name.equals(plys[i].getName()) || name.equals(plys[i].getID()))) {
 				return plys[i];
 			}
 		}

@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import server.logger.Logger;
 import server.netio.ServerHandlerThread;
+import server.readout.Readout;
 
 public class MainThread extends Thread {
 
 	public static void main(String[] args) throws IOException {
 		ServerContext context = new ServerContext();
+		Readout.start(context.context.storage);
 		new ServerHandlerThread(50000, context).start();
 		new MainThread(context).start();
 	}
