@@ -21,7 +21,7 @@ public class RouteClient {
 		output.writeInt(0xBEEFDEAD);
 		output.writeUTF(myName + ":" + myport);
 	}
-	
+
 	public synchronized void setAvailable(boolean available) {
 		if (disconnected) {
 			return;

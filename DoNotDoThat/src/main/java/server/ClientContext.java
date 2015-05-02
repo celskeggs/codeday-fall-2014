@@ -27,7 +27,7 @@ public class ClientContext extends CombatantContext {
 	public void setLevel(int level) {
 		game.storage.put("level." + game.storage.get("ip." + clientId), level);
 	}
-	
+
 	public int getLevel() {
 		Integer out = (Integer) game.storage.get("level." + game.storage.get("ip." + clientId));
 		return out == null ? 1 : out;

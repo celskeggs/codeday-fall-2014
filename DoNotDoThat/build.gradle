@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+mainClassName = 'server.LiteServer'
+sourceCompatibility = '1.7'
+version = '0.1.0'
+
+jar {
+	baseName = 'DoNotDoThat'
+	manifest {
+		attributes("Main-Class": mainClassName)
+	}
+}
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.3'
+}

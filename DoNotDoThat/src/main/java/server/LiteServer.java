@@ -8,7 +8,7 @@ import server.logger.Logger;
 import server.route.RouteServe;
 
 public class LiteServer {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		new Thread() {
 			public void run() {
 				try {
@@ -18,7 +18,9 @@ public class LiteServer {
 				}
 			}
 		}.start();
+		Thread.sleep(5000);
 		MainThread.main(new String[] {"127.0.0.1"});
-		JOptionPane.showMessageDialog(null, "LiteServer is now running locally on " + MainThread.getLocalAddress());
+		Logger.info("LiteServer is now running locally on " + MainThread.getLocalAddress());
+		//JOptionPane.showMessageDialog(null, "LiteServer is now running locally on " + MainThread.getLocalAddress());
 	}
 }

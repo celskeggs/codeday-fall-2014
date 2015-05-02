@@ -19,8 +19,8 @@ public class CommandSetName extends Command {
 				this.client.receivedChatMessage("Another player has already taken that name!");
 				return;
 			}
-			for (ClientContext client : client.serverContext.listPlayers()) {
-				if (client != null && client.getName() != null && name.toLowerCase().equals(client.getName().toLowerCase())) {
+			for (ClientContext cli : client.serverContext.listPlayers()) {
+				if (cli != null && cli.getName() != null && name.toLowerCase().equals(cli.getName().toLowerCase())) {
 					this.client.receivedChatMessage("Another player has already taken that name!");
 					return;
 				}

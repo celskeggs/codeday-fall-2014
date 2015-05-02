@@ -16,7 +16,7 @@ public class MainThread extends Thread {
 
 	public static void main(String[] args) throws IOException {
 		ServerContext context = new ServerContext();
-		Readout.start(context.context.storage, context);
+		//Readout.start(context.context.storage, context);
 		Random rand = new Random();
 		int port = 50002 + rand.nextInt(10000);
 		RouteClient cli = new RouteClient(args.length == 0 ? "10.251.14.147" : args[0], 50001);
@@ -31,12 +31,12 @@ public class MainThread extends Thread {
 		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 		while (interfaces.hasMoreElements()){
 		    NetworkInterface current = interfaces.nextElement();
-		    System.out.println(current);
+		    Logger.finer("Found interface: " + current);
 		    if (!current.isUp() || current.isLoopback() || current.isVirtual()) continue;
 		    Enumeration<InetAddress> addresses = current.getInetAddresses();
 		    while (addresses.hasMoreElements()){
 		        InetAddress current_addr = addresses.nextElement();
-		        if (current_addr.isLoopbackAddress()) continue;
+		        if (current_addr.isLoopbackAddress() || current_addr.isLinkLocalAddress()) continue;
 		        return current_addr.getHostAddress();
 		    }
 		}
