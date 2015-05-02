@@ -25,17 +25,22 @@ def ask_route_server():
 	oldtimeout = ls.gettimeout()
 	ls.settimeout(3)
 	try:
-		ls.connect(("10.251.14.147", 50001))
+		ls.connect(("127.0.0.1", 50001))
 	except socket.error:
+		ls = socket.socket()
+		ls.settimeout(3)
 		try:
-			ls.connect(("127.0.0.1", 50001))
+			ls.connect(("dndt.colbyskeggs.com", 50001))
 		except socket.error:
-			ls.settimeout(oldtimeout)
+			ls = socket.socket()
+			ls.settimeout(3)
 			try:
-				ls.connect((raw_input("Enter the route server or LiteServer IP address> "), 50001))
+				target = (raw_input("Enter the route server or LiteServer IP address> "), 50001)
+				print "Connecting to: %s:%s ..." % target
+				ls.connect(target)
 			except socket.error:
 				print "Route server or LiteServer not contacted."
-				raw_input("Press enter...")
+				raw_input("Press enter to exit...")
 				sys.exit()
 	ls.settimeout(oldtimeout)
 	ls.send(encode4(0xDEADBEEF))
@@ -47,13 +52,12 @@ def ask_route_server():
 		sys.exit()
 	else:
 		print "Server provided address: " + data
-		host, port = data.split(":")
-		return host, int(port)
+		hp = data.split(":")
+		host, port = ":".join(hp[:-1]), int(hp[-1])
+		return host, port
 
 s = socket.socket()
 host, port = ask_route_server()
-#host = ("192.168.0.61")
-#port = 50000
 s.connect((host, port))
 
 dictionary = {}
