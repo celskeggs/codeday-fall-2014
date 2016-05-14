@@ -14,7 +14,6 @@ import java.util.Objects;
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;

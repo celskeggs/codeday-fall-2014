@@ -2,8 +2,6 @@ package server;
 
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
 import server.logger.Logger;
 import server.route.RouteServe;
 
@@ -21,6 +19,5 @@ public class LiteServer {
 		Thread.sleep(5000);
 		MainThread.main(new String[] {"127.0.0.1"});
 		Logger.info("LiteServer is now running locally on " + MainThread.getLocalAddress());
-		//JOptionPane.showMessageDialog(null, "LiteServer is now running locally on " + MainThread.getLocalAddress());
 	}
 }
